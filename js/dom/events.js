@@ -244,6 +244,7 @@ export function setupEventListeners(elements, settingsManager, agent, themeManag
                 // Send the text to the agent
                 await agent.sendText(text);
                 elements.messageInput.value = '';
+                console.log('Message sent:', text);
             }
         } catch (error) {
             console.error('Error sending message:', error);

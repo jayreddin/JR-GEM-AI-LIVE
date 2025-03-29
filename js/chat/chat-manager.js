@@ -95,6 +95,12 @@ export class ChatManager {
         }
         return null;
     }
+    
+    toggleTimestamps() {
+        const currentSetting = localStorage.getItem('showTimestamps') === 'true';
+        localStorage.setItem('showTimestamps', !currentSetting);
+        console.log('Timestamps toggled:', !currentSetting);
+    }
 
     updateStreamingMessage(text) {
         if (!this.currentStreamingMessage) {
