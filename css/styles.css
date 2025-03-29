@@ -304,7 +304,6 @@ body {
 
 
 .settings-dialog {
-    display: none;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -421,7 +420,6 @@ input:checked + .toggle-slider:before {
 }
 
 .settings-overlay {
-    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -429,10 +427,6 @@ input:checked + .toggle-slider:before {
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
-}
-
-.settings-overlay.active {
-    display: block;
 }
 
 .settings-group {

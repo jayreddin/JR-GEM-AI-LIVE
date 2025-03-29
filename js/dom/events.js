@@ -266,7 +266,8 @@ export function setupEventListeners(agent) {
     }
 
     // Settings button click
-    if (elements.settingsBtn) {
-        elements.settingsBtn.addEventListener('click', () => settingsManager.toggleDialog());
+    const settingsBtn = document.getElementById('settingsBtn');
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', () => settingsManager.toggleDialog());
     }
 }
