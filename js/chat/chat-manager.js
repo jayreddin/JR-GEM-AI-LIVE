@@ -9,19 +9,19 @@ export class ChatManager {
     addUserMessage(text) {
         const messageDiv = document.createElement('div');
         messageDiv.className = 'chat-message user-message';
-        
+
         // Add timestamp if enabled
         const timestamp = this.getTimestamp();
         const titleDiv = document.createElement('div');
         titleDiv.className = 'chat-title';
         titleDiv.textContent = timestamp ? `You - ${timestamp}` : 'You';
         messageDiv.appendChild(titleDiv);
-        
+
         const contentDiv = document.createElement('div');
         contentDiv.className = 'chat-content';
         contentDiv.textContent = text;
         messageDiv.appendChild(contentDiv);
-        
+
         this.chatContainer.appendChild(messageDiv);
         this.lastUserMessageType = 'text';
         this.scrollToBottom();
@@ -30,19 +30,19 @@ export class ChatManager {
     addUserAudioMessage() {
         const messageDiv = document.createElement('div');
         messageDiv.className = 'chat-message user-message';
-        
+
         // Add timestamp if enabled
         const timestamp = this.getTimestamp();
         const titleDiv = document.createElement('div');
         titleDiv.className = 'chat-title';
         titleDiv.textContent = timestamp ? `You - ${timestamp}` : 'You';
         messageDiv.appendChild(titleDiv);
-        
+
         const contentDiv = document.createElement('div');
         contentDiv.className = 'chat-content';
         contentDiv.textContent = 'Voice input';
         messageDiv.appendChild(contentDiv);
-        
+
         this.chatContainer.appendChild(messageDiv);
         this.lastUserMessageType = 'audio';
         this.scrollToBottom();
@@ -58,29 +58,28 @@ export class ChatManager {
         if (!this.lastUserMessageType) {
             this.addUserAudioMessage();
         }
-        
-        // Create model message with title
+
         const messageDiv = document.createElement('div');
         messageDiv.className = 'chat-message model-message streaming';
-        
+
         // Add model name and timestamp
         const timestamp = this.getTimestamp();
         const titleDiv = document.createElement('div');
         titleDiv.className = 'chat-title';
         titleDiv.textContent = timestamp ? `Gemini 2.0 Flash - ${timestamp}` : 'Gemini 2.0 Flash';
         messageDiv.appendChild(titleDiv);
-        
+
         // Add content div
         const contentDiv = document.createElement('div');
         contentDiv.className = 'chat-content';
         messageDiv.appendChild(contentDiv);
-        
+
         this.chatContainer.appendChild(messageDiv);
         this.currentStreamingMessage = messageDiv;
         this.currentTranscript = ''; // Reset transcript when starting new message
         this.scrollToBottom();
     }
-    
+
     getTimestamp() {
         if (localStorage.getItem('showTimestamps') === 'true') {
             const now = new Date();
@@ -89,28 +88,20 @@ export class ChatManager {
         return null;
     }
 
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'chat-message model-message streaming';
-        this.chatContainer.appendChild(messageDiv);
-        this.currentStreamingMessage = messageDiv;
-        this.currentTranscript = ''; // Reset transcript when starting new message
-        this.scrollToBottom();
-    }
-
     updateStreamingMessage(text) {
         if (!this.currentStreamingMessage) {
             this.startModelMessage();
         }
         this.currentTranscript += ' ' + text; // Append new text to the transcript
-        
+
         // Update just the content div
         const contentDiv = this.currentStreamingMessage.querySelector('.chat-content');
         if (contentDiv) {
             contentDiv.textContent = this.currentTranscript;
         }
-        
+
         this.scrollToBottom();
-        
+
         // If speech is enabled, send to speech synthesis
         if (window.speechEnabled && text.trim() !== '') {
             this.speakText(text);
@@ -125,7 +116,7 @@ export class ChatManager {
             this.currentTranscript = ''; // Reset transcript when finalizing
         }
     }
-    
+
     speakText(text) {
         if ('speechSynthesis' in window && window.speechEnabled) {
             const utterance = new SpeechSynthesisUtterance(text);
@@ -143,4 +134,4 @@ export class ChatManager {
         this.lastUserMessageType = null;
         this.currentTranscript = '';
     }
-} 
+}
