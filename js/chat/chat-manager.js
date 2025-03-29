@@ -111,9 +111,6 @@ export class ChatManager {
             this.currentTranscript += text;
             contentDiv.textContent = this.currentTranscript;
         }
-
-        // Update just the content div
-        const contentDiv = this.currentStreamingMessage.querySelector('.chat-content');
         if (contentDiv) {
             contentDiv.textContent = this.currentTranscript;
         }
