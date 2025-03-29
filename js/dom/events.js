@@ -1,5 +1,7 @@
 import elements from './elements.js';
-import settingsManager from '../settings/settings-manager.js';
+import { SettingsManager } from '../settings/settings-manager.js';
+
+const settingsManager = new SettingsManager();
 
 /**
  * Updates UI to show disconnect button and hide connect button
