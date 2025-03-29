@@ -1,13 +1,14 @@
 /**
  * Client for interacting with the Gemini 2.0 Flash Multimodal Live API via WebSockets.
  * This class handles the connection, sending and receiving messages, and processing responses.
- * 
+ *
  * @extends EventEmitter
  */
+// Import EventEmitter - THIS LINE IS ADDED/UNCOMMENTED
 import { EventEmitter } from 'https://cdn.skypack.dev/eventemitter3';
 import { blobToJSON, base64ToArrayBuffer } from '../utils/utils.js';
 
-export class GeminiWebsocketClient extends EventEmitter {
+export class GeminiWebsocketClient extends EventEmitter { // Now EventEmitter should be defined
     /**
      * Creates a new GeminiWebsocketClient with the given configuration.
      * @param {string} name - Name for the websocket client.
@@ -15,237 +16,375 @@ export class GeminiWebsocketClient extends EventEmitter {
      * @param {Object} config - Configuration object for the Gemini API.
      */
     constructor(name, url, config) {
-        super();
+        super(); // Call EventEmitter constructor
         this.name = name || 'WebSocketClient';
-        this.url = url || `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${apiKey}`;
+        this.url = url; // URL is now mandatory and provided by agent.js which reads from config.js
         this.ws = null;
-        this.config = config;
+        this.config = config; // Config object provided by agent.js
         this.isConnecting = false;
         this.connectionPromise = null;
+
+        if (!this.url) {
+            throw new Error("WebSocket URL is required.");
+        }
+        if (!this.config) {
+            throw new Error("Configuration object is required.");
+        }
     }
 
     /**
      * Establishes a WebSocket connection and initializes the session with a configuration.
-     * @returns {Promise} Resolves when the connection is established and setup is complete
+     * Handles concurrent connection attempts.
+     * @returns {Promise<void>} Resolves when the connection is established and setup is complete
      */
     async connect() {
+        // If already connected, return the existing promise/resolve immediately
         if (this.ws?.readyState === WebSocket.OPEN) {
-            return this.connectionPromise;
+            console.debug(`${this.name}: Already connected.`);
+            return Promise.resolve();
         }
 
+        // If connection is already in progress, return the pending promise
         if (this.isConnecting) {
+            console.debug(`${this.name}: Connection attempt in progress, returning existing promise.`);
             return this.connectionPromise;
         }
 
-        console.info('🔗 Establishing WebSocket connection...');
+        console.info(`${this.name}: Establishing WebSocket connection to ${this.url}...`);
         this.isConnecting = true;
+
+        // Create a new promise for this connection attempt
         this.connectionPromise = new Promise((resolve, reject) => {
-            const ws = new WebSocket(this.url);
-
-            // Send setup message upon successful connection
-            ws.addEventListener('open', () => {
-                console.info('🔗 Successfully connected to websocket');
-                this.ws = ws;
-                this.isConnecting = false;
-
-                // Configure
-                this.sendJSON({ setup: this.config });
-                console.debug("Setup message with the following configuration was sent:", this.config);
-                resolve();
-            });
-
-            // Handle connection errors
-            ws.addEventListener('error', (error) => {
-                this.disconnect(ws);
-                const reason = error.reason || 'Unknown';
-                const message = `Could not connect to "${this.url}. Reason: ${reason}"`;
-                console.error(message, error);
-                reject(error);
-            });
-
-            // Listen for incoming messages, expecting Blob data for binary streams
-            ws.addEventListener('message', async (event) => {
-                if (event.data instanceof Blob) {
-                    this.receive(event.data);
-                } else {
-                    console.error('Non-blob message received', event);
+            try {
+                // Ensure URL is valid before creating WebSocket
+                if (!this.url || typeof this.url !== 'string' || !this.url.startsWith('wss://')) {
+                    throw new Error(`Invalid WebSocket URL: ${this.url}`);
                 }
-            });
+                const ws = new WebSocket(this.url);
+                this.ws = ws; // Assign early to allow potential immediate disconnect calls
+
+                ws.addEventListener('open', () => {
+                    console.info(`${this.name}: Successfully connected to WebSocket.`);
+                    this.isConnecting = false;
+
+                    // Send the configuration setup message
+                    this.sendJSON({ setup: this.config })
+                        .then(() => {
+                            console.debug(`${this.name}: Setup message sent with configuration:`, this.config);
+                            resolve(); // Resolve the promise *after* setup is sent
+                        })
+                        .catch((setupError) => {
+                            console.error(`${this.name}: Error sending setup message:`, setupError);
+                            this.disconnect(); // Disconnect if setup fails
+                            reject(setupError); // Reject the connection promise
+                        });
+                });
+
+                ws.addEventListener('error', (errorEvent) => {
+                    // The 'error' event doesn't always provide detailed reasons.
+                    // The 'close' event usually follows with more info.
+                    console.error(`${this.name}: WebSocket error occurred.`, errorEvent);
+                    // Attempt to disconnect and clean up state
+                    this.disconnect(); // Ensure cleanup happens
+                    this.isConnecting = false;
+                    // Reject the promise if it hasn't been resolved yet
+                    reject(new Error(`${this.name}: WebSocket connection error. Check console for details.`));
+                });
+
+                ws.addEventListener('close', (closeEvent) => {
+                    console.warn(`${this.name}: WebSocket connection closed. Code: <span class="math-inline">\{closeEvent\.code\}, Reason\: "</span>{closeEvent.reason || 'No reason provided'}"`);
+                    this.isConnecting = false;
+                    this.ws = null; // Ensure ws is nullified
+                    // If the connection promise is still pending (i.e., connection failed before 'open'), reject it.
+                    // Check readyState as 'close' can sometimes fire after a successful open if disconnected quickly.
+                    if (closeEvent.target.readyState !== WebSocket.OPEN && this.connectionPromise) {
+                        reject(new Error(`${this.name}: WebSocket closed before connection was fully established. Code: ${closeEvent.code}`));
+                    }
+                    // Emit a disconnected event for other parts of the app
+                    this.emit('disconnected', { code: closeEvent.code, reason: closeEvent.reason });
+                });
+
+
+                // Listen for incoming messages (expecting Blob data)
+                ws.addEventListener('message', async (event) => {
+                    if (event.data instanceof Blob) {
+                        try {
+                            await this.receive(event.data);
+                        } catch (receiveError) {
+                            console.error(`${this.name}: Error processing received message:`, receiveError);
+                            // Optionally emit an error event
+                            this.emit('error', receiveError);
+                        }
+                    } else {
+                        console.warn(`${this.name}: Received non-blob message:`, event.data);
+                        // Handle unexpected text messages if necessary
+                        try {
+                            const jsonData = JSON.parse(event.data);
+                            console.warn(`${this.name}: Parsed non-blob message as JSON:`, jsonData);
+                            // Potentially handle specific text-based error messages from the server
+                        } catch (parseError) {
+                            console.error(`${this.name}: Could not parse non-blob message as JSON.`);
+                        }
+                    }
+                });
+
+            } catch (error) {
+                // Catch synchronous errors (e.g., invalid URL)
+                console.error(`${this.name}: Failed to create WebSocket:`, error);
+                this.isConnecting = false;
+                this.ws = null;
+                reject(error);
+            }
         });
 
         return this.connectionPromise;
     }
 
+    /**
+     * Closes the WebSocket connection if open.
+     */
     disconnect() {
         if (this.ws) {
-            this.ws.close();
-            this.ws = null;
+            console.info(`${this.name}: Disconnecting WebSocket...`);
+            // Remove listeners to prevent errors after explicit close
+            this.ws.onopen = null;
+            this.ws.onmessage = null;
+            this.ws.onerror = null;
+            this.ws.onclose = null;
+            try {
+                // Check state before closing
+                if (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING) {
+                    this.ws.close(1000, "Client initiated disconnect"); // 1000 indicates normal closure
+                }
+            } catch (closeError) {
+                console.error(`${this.name}: Error during WebSocket close:`, closeError);
+            } finally {
+                this.ws = null; // Nullify regardless of close success/failure
+                this.isConnecting = false;
+                // Reset connection promise? Depends on desired reconnect behavior.
+                // Setting to null allows a fresh promise on next connect() call.
+                this.connectionPromise = null;
+                console.info(`${this.name}: WebSocket disconnected.`);
+                this.emit('disconnected', { code: 1000, reason: "Client initiated disconnect" });
+            }
+        } else {
+            console.debug(`${this.name}: WebSocket already disconnected or not initialized.`);
+            // Ensure state is consistent
             this.isConnecting = false;
             this.connectionPromise = null;
-            console.info(`${this.name} successfully disconnected from websocket`);
         }
     }
 
     /**
-     * Processes incoming WebSocket messages.
-     * Handles various response types including tool calls, setup completion,
-     * and content delivery (text/audio).
+     * Processes incoming WebSocket Blob messages.
+     * Converts Blob to JSON and emits corresponding events based on the response structure.
+     * @param {Blob} blob - The received Blob data.
      */
     async receive(blob) {
-        const response = await blobToJSON(blob);
-        
-        // Handle tool call responses
-        if (response.toolCall) {
-            console.debug(`${this.name} received tool call`, response);       
-            this.emit('tool_call', response.toolCall);
+        let response;
+        try {
+            response = await blobToJSON(blob);
+        } catch (error) {
+            console.error(`${this.name}: Failed to parse received blob to JSON:`, error);
+            this.emit('error', new Error("Failed to parse server message"));
             return;
         }
 
-        // Handle tool call cancellation
+        // --- Handle Specific Response Types ---
+
+        // Handle setup confirmation (Added)
+        if (response.setupComplete) {
+            console.debug(`${this.name}: Received setup complete confirmation.`, response.setupComplete);
+            this.emit('setup_complete', response.setupComplete);
+            return; // Explicitly handled
+        }
+
+        // Handle tool call requests
+        if (response.toolCall) {
+            console.debug(`${this.name}: Received tool call`, response);
+            // Basic validation
+            if (response.toolCall.functionCalls && Array.isArray(response.toolCall.functionCalls)) {
+                this.emit('tool_call', response.toolCall);
+            } else {
+                console.warn(`${this.name}: Received malformed tool call:`, response);
+                this.emit('error', new Error("Received malformed tool call from server"));
+            }
+            return;
+        }
+
+        // Handle tool call cancellation (if applicable API feature)
         if (response.toolCallCancellation) {
-            console.debug(`${this.name} received tool call cancellation`, response);
+            console.debug(`${this.name}: Received tool call cancellation`, response);
             this.emit('tool_call_cancellation', response.toolCallCancellation);
             return;
         }
 
-        // Process server content (text/audio/interruptions)
+        // Process server content (text/audio/interruptions/turn completion)
         if (response.serverContent) {
             const { serverContent } = response;
+
             if (serverContent.interrupted) {
-                console.debug(`${this.name} is interrupted`);
+                console.debug(`${this.name}: Model turn interrupted.`);
                 this.emit('interrupted');
-                return;
+                // Interruption might or might not be followed by turnComplete, depends on API
             }
+
             if (serverContent.turnComplete) {
-                console.debug(`${this.name} has completed its turn`);
+                console.debug(`${this.name}: Model turn complete.`);
                 this.emit('turn_complete');
+                // Turn complete often signifies the end of a logical response block
             }
-            if (serverContent.modelTurn) {
-                // Split content into text, audio, and non-audio parts
-                let parts = serverContent.modelTurn.parts;
 
-                // Filter out text parts
-                const textParts = parts.filter((p) => p.text);
-                textParts.forEach((p) => {
-                    this.emit('text', p.text);
-                });
+            if (serverContent.modelTurn && serverContent.modelTurn.parts) {
+                // Process parts: text, audio, potentially others
+                const parts = serverContent.modelTurn.parts;
 
-                // Filter out audio parts from the model's content parts
-                const audioParts = parts.filter((p) => p.inlineData && p.inlineData.mimeType.startsWith('audio/pcm'));
-                
-                // Extract base64 encoded audio data from the audio parts
-                const base64s = audioParts.map((p) => p.inlineData?.data);
-                
-                // Create an array of non-audio parts by excluding the audio parts
-                const otherParts = parts.filter((p) => !audioParts.includes(p));
-
-                // Process audio data
-                base64s.forEach((b64) => {
-                    if (b64) {
-                        const data = base64ToArrayBuffer(b64);
-                        this.emit('audio', data);
+                parts.forEach(part => {
+                    if (part.text) {
+                        // Emit raw text
+                        this.emit('text', part.text);
+                    } else if (part.inlineData && part.inlineData.mimeType?.startsWith('audio/pcm')) {
+                        if (part.inlineData.data) {
+                            try {
+                                const audioData = base64ToArrayBuffer(part.inlineData.data);
+                                this.emit('audio', audioData);
+                            } catch (audioError) {
+                                console.error(`${this.name}: Failed to decode audio data:`, audioError);
+                                this.emit('error', new Error("Failed to decode server audio"));
+                            }
+                        } else {
+                            console.warn(`${this.name}: Received audio part without data.`);
+                        }
+                    } else {
+                        // Handle other potential part types if necessary
+                        console.debug(`${this.name}: Received unhandled model turn part:`, part);
+                        this.emit('unhandled_part', part); // Emit for potential external handling
                     }
                 });
-
-                // Emit remaining content
-                if (otherParts.length) {
-                    this.emit('content', { modelTurn: { parts: otherParts } });
-                    console.debug(`${this.name} sent:`, otherParts);
-                }
+            } else if (!serverContent.interrupted && !serverContent.turnComplete) {
+                // Received serverContent without modelTurn, interrupted, or turnComplete
+                console.debug(`${this.name}: Received serverContent without actionable data:`, response);
             }
-        } else {
-            console.debug(`${this.name} received unmatched message:`, response);
+            return; // Handled serverContent
         }
+
+        // --- Fallback for Unmatched Messages ---
+        console.warn(`${this.name}: Received unhandled message type:`, response);
+        this.emit('unhandled_message', response);
     }
 
     /**
+     * Sends a JSON object over the WebSocket. Ensures connection is open.
+     * @param {Object} json - The JSON object to send.
+     * @returns {Promise<void>} Resolves when sent, rejects on error or if not connected.
+     */
+    async sendJSON(json) {
+        if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+            console.error(`${this.name}: Cannot send JSON, WebSocket is not open. State: ${this.ws?.readyState}`);
+            // Option 1: Throw error
+            throw new Error("WebSocket is not open.");
+            // Option 2: Try to connect first? (Can lead to complex state)
+            // await this.connect(); // Be careful with re-entrancy and timing
+            // if (!this.ws || this.ws.readyState !== WebSocket.OPEN) throw new Error("WebSocket connection failed.");
+        }
+
+        try {
+            const jsonString = JSON.stringify(json);
+            this.ws.send(jsonString);
+            // Avoid logging large data chunks like audio/images by default in production
+            // console.debug(`${this.name}: Sent JSON:`, json); // Use conditional logging
+        } catch (error) {
+            console.error(`${this.name}: Failed to send JSON:`, error);
+            // Consider disconnecting or emitting an error
+            this.emit('error', new Error(`Failed to send message: ${error.message}`));
+            throw error; // Re-throw for caller to handle
+        }
+    }
+
+
+    /**
      * Sends encoded audio chunk to the Gemini API.
-     * 
      * @param {string} base64audio - The base64 encoded audio string.
      */
     async sendAudio(base64audio) {
         const data = { realtimeInput: { mediaChunks: [{ mimeType: 'audio/pcm', data: base64audio }] } };
         await this.sendJSON(data);
-        console.debug(`Sending audio chunk to ${this.name}.`);
+        // console.debug(`${this.name}: Sent audio chunk.`); // Keep logs concise
     }
 
     /**
      * Sends encoded image to the Gemini API.
-     * 
-     * @param {string} base64image - The base64 encoded image string.
+     * @param {string} base64image - The base64 encoded image string (data only, no prefix).
      */
     async sendImage(base64image) {
         const data = { realtimeInput: { mediaChunks: [{ mimeType: 'image/jpeg', data: base64image }] } };
         await this.sendJSON(data);
-        console.debug(`Image with a size of ${Math.round(base64image.length/1024)} KB was sent to the ${this.name}.`);
+        // console.debug(`<span class="math-inline">\{this\.name\}\: Sent image chunk \(</span>{Math.round(base64image.length / 1024)} KB).`);
     }
 
     /**
      * Sends a text message to the Gemini API.
-     * 
      * @param {string} text - The text to send to Gemini.
-     * @param {boolean} endOfTurn - If false model will wait for more input without sending a response.
+     * @param {boolean} [endOfTurn=true] - If false, the model may wait for more input.
      */
     async sendText(text, endOfTurn = true) {
-        const formattedText = { 
-            clientContent: { 
+        // Basic validation
+        if (typeof text !== 'string') {
+            console.error(`${this.name}: Invalid text input for sendText.`);
+            return; // Or throw error
+        }
+        const formattedMessage = {
+            clientContent: {
                 turns: [{
-                    role: 'user', 
+                    role: 'user',
                     parts: [{ text: text }]
-                }], 
-                turnComplete: endOfTurn 
-            } 
+                }],
+                // Only include turnComplete if it's true, some APIs might prefer omission if false
+                ...(endOfTurn && { turnComplete: true })
+            }
         };
-        await this.sendJSON(formattedText);
-        console.debug(`Text sent to ${this.name}:`, text);
-        // Emit text_sent event
-        this.emit('text_sent', text);
+        await this.sendJSON(formattedMessage);
+        console.debug(`<span class="math-inline">\{this\.name\}\: Sent text\: "</span>{text}" (EndOfTurn: ${endOfTurn})`);
+        // Emit text_sent event AFTER successful sending
+        this.emit('text_sent', { text, endOfTurn });
     }
+
     /**
-     * Sends the result of the tool call to Gemini.
-     * @param {Object} toolResponse - The response object
-     * @param {any} toolResponse.output - The output of the tool execution (string, number, object, etc.)
-     * @param {string} toolResponse.id - The identifier of the tool call from toolCall.functionCalls[0].id
-     * @param {string} toolResponse.error - Send the output as null and the error message if the tool call failed (optional)
+     * Sends the result of a tool call back to Gemini.
+     * @param {Object} toolResponse - The response object.
+     * @param {string} toolResponse.id - The identifier of the tool call (from toolCall.functionCalls[0].id).
+     * @param {*} [toolResponse.output] - The output of the tool execution (required if no error).
+     * @param {string} [toolResponse.error] - Error message if the tool call failed (output should be omitted/null).
      */
     async sendToolResponse(toolResponse) {
-        if (!toolResponse || !toolResponse.id) {
-            throw new Error('Tool response must include an id');
+        if (!toolResponse || typeof toolResponse.id !== 'string') {
+            console.error(`${this.name}: Invalid toolResponse object for sendToolResponse. Missing or invalid 'id'.`, toolResponse);
+            throw new Error("Tool response must include a valid string 'id'.");
         }
 
-        const { output, id, error } = toolResponse;
-        let result = [];
+        const { id, output, error } = toolResponse;
+        let functionResponsePayload;
 
-        if (error) {
-            result = [{
-                response: { error: error },
-                id
-            }];
-        } else if (output === undefined) {
-            throw new Error('Tool response must include an output when no error is provided');
+        if (error !== undefined && error !== null) {
+            // Send error response
+            functionResponsePayload = {
+                response: { error: String(error) }, // Ensure error is a string
+                id: id
+            };
+            console.warn(`${this.name}: Sending tool error response for ID ${id}:`, error);
+        } else if (output !== undefined) {
+            // Send successful output response
+            functionResponsePayload = {
+                response: { output: output }, // Output can be any JSON-serializable type expected by the agent
+                id: id
+            };
+            // console.debug(`${this.name}: Sending tool success response for ID ${id}:`, output);
         } else {
-            result = [{
-                response: { output: output },
-                id
-            }];
+            console.error(`${this.name}: Invalid toolResponse for sendToolResponse. Must include 'output' or 'error'.`, toolResponse);
+            throw new Error("Tool response must include 'output' or 'error'.");
         }
 
-        await this.sendJSON({ toolResponse: {functionResponses: result} });
-        console.debug(`Tool response sent to ${this.name}:`, toolResponse);
-    }
-
-    /**
-     * Sends a JSON object to the Gemini API.
-     * 
-     * @param {Object} json - The JSON object to send.
-     */
-
-    async sendJSON(json) {        
-        try {
-            this.ws.send(JSON.stringify(json));
-            // console.debug(`JSON Object was sent to ${this.name}:`, json);
-        } catch (error) {
-            throw new Error(`Failed to send ${json} to ${this.name}:` + error);
-        }
+        await this.sendJSON({ toolResponse: { functionResponses: [functionResponsePayload] } });
+        console.debug(`${this.name}: Tool response sent for ID ${id}.`);
     }
 }

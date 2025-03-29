@@ -1,295 +1,529 @@
-import { settingsTemplate } from './settings-template.js';
+/**
+ * Manages the settings dialog UI, including creating the dialog,
+ * handling tab switching, loading/saving settings from localStorage,
+ * and interacting with various settings controls.
+ */
+import { settingsTemplate } from './settings-template.js'; // HTML template for the dialog
 
 class SettingsManager {
     constructor() {
-        this.dialog = null;
-        this.overlay = null;
-        this.isOpen = false;
-        this.elements = {};
+        this.dialog = null;      // Reference to the main dialog DOM element
+        this.overlay = null;     // Reference to the background overlay DOM element
+        this.isOpen = false;     // Flag indicating if the dialog is currently visible
+        this.isInitialized = false; // Flag indicating if the dialog has been created in the DOM
+        this.elements = {};      // Cache for frequently accessed DOM elements within the dialog
+
+        console.info("SettingsManager instance created.");
     }
 
+    /**
+     * Creates and initializes the settings dialog DOM structure if it hasn't been already.
+     * Adds the dialog and overlay to the document body.
+     */
     initialize() {
-        // Create the dialog element if it doesn't exist
-        if (!this.dialog) {
-            // Create the overlay element
+        if (this.isInitialized) {
+            // console.debug("SettingsManager already initialized.");
+            return;
+        }
+        console.info("Initializing SettingsManager DOM...");
+
+        try {
+            // --- Create Overlay ---
             this.overlay = document.createElement('div');
-            this.overlay.className = 'settings-overlay';
+            this.overlay.className = 'settings-overlay'; // CSS class for styling (e.g., background dim)
+            this.overlay.setAttribute('aria-hidden', 'true'); // Initially hidden for accessibility
+            // Add event listener to close dialog when clicking outside of it (on the overlay)
             this.overlay.addEventListener('click', (event) => {
-                // Only close if the overlay itself was clicked, not its children
+                // Only close if the click target is the overlay itself, not a child element (like the dialog)
                 if (event.target === this.overlay) {
                     this.hide();
                 }
             });
 
-            // Create the dialog element
+            // --- Create Dialog ---
             this.dialog = document.createElement('div');
             this.dialog.className = 'settings-dialog';
+            this.dialog.setAttribute('role', 'dialog'); // Accessibility role
+            this.dialog.setAttribute('aria-modal', 'true'); // Indicates it's a modal dialog
+            this.dialog.setAttribute('aria-labelledby', 'settings-dialog-title'); // Requires an element with this ID for title
+
+            // Populate dialog content from the imported template
             this.dialog.innerHTML = settingsTemplate;
-            
-            // Prevent dialog clicks from bubbling to the overlay
+
+            // Add a title element for accessibility (referenced by aria-labelledby)
+            const titleElement = document.createElement('h2');
+            titleElement.id = 'settings-dialog-title';
+            titleElement.textContent = 'Application Settings';
+            titleElement.style.position = 'absolute'; // Visually hide the title, but keep for screen readers
+            titleElement.style.left = '-9999px';
+            this.dialog.insertBefore(titleElement, this.dialog.firstChild);
+
+
+            // Prevent clicks inside the dialog from bubbling up and closing it via the overlay listener
             this.dialog.addEventListener('click', (event) => {
                 event.stopPropagation();
             });
 
-            // Add close button event listener
-            const closeBtn = this.dialog.querySelector('.settings-close-btn');
+            // --- Add Close Button Listener ---
+            const closeBtn = this.dialog.querySelector('.settings-close-btn'); // Assuming template has a close button
             if (closeBtn) {
                 closeBtn.addEventListener('click', () => this.hide());
+            } else {
+                console.warn("Settings dialog template might be missing a '.settings-close-btn'.");
+                // As a fallback, maybe allow Esc key to close?
+                // Note: This would need careful implementation to avoid conflicts.
             }
 
-            // Add the dialog to the overlay
-            this.overlay.appendChild(this.dialog);
+            // --- Assemble and Append ---
+            this.overlay.appendChild(this.dialog); // Add dialog inside the overlay
+            document.body.appendChild(this.overlay); // Add overlay (and dialog) to the main document
 
-            // Cache all the elements (from original code)
-            this.cacheElements();
-            this.bindEvents();
+            // --- Cache Elements and Bind Events ---
+            this._cacheElements(); // Find and store references to internal elements
+            this._bindEvents(); // Set up listeners for tabs, inputs, save button etc.
 
+            this.isInitialized = true;
+            console.info("SettingsManager DOM initialized successfully.");
+
+        } catch (error) {
+            console.error("Failed to initialize SettingsManager DOM:", error);
+            // Clean up potentially partially created elements
+            if (this.overlay && this.overlay.parentNode) {
+                document.body.removeChild(this.overlay);
+            }
+            this.dialog = null;
+            this.overlay = null;
+            this.isInitialized = false;
+            // Notify user? Depends on how critical settings are.
         }
     }
 
-    cacheElements() {
+    /** Caches references to important DOM elements within the dialog for faster access. */
+    _cacheElements() {
+        if (!this.dialog) return; // Should not happen if initialized correctly
+
+        // Helper to query and warn if element not found
+        const query = (selector) => {
+            const element = this.dialog.querySelector(selector);
+            // if (!element) console.warn(`SettingsManager: Element not found for selector "${selector}"`);
+            return element;
+        };
+        const queryAll = (selector) => {
+            const elements = this.dialog.querySelectorAll(selector);
+            // if (elements.length === 0) console.warn(`SettingsManager: No elements found for selector "${selector}"`);
+            return elements;
+        };
+
+
         this.elements = {
-            // Tabs
-            tabs: this.dialog.querySelectorAll('.settings-tab'),
-            tabContents: this.dialog.querySelectorAll('.tab-content'),
-
-            // API tab
-            apiKeyInput: this.dialog.querySelector('#apiKey'),
-            deepgramApiKeyInput: this.dialog.querySelector('#deepgramApiKey'),
-
-            // UI tab
-            themeToggle: this.dialog.querySelector('#themeToggle'),
-            textSizeInput: this.dialog.querySelector('#textSize'),
-            textSizeValue: this.dialog.querySelector('#textSizeValue'),
-            timestampToggle: this.dialog.querySelector('#timestampToggle'),
-            speakToggle: this.dialog.querySelector('#speakToggle'),
-
-            // Other UI elements
+            // Keep direct references to dialog and overlay
             dialog: this.dialog,
             overlay: this.overlay,
-            voiceSelect: this.dialog.querySelector('#voice'),
-            sampleRateInput: this.dialog.querySelector('#sampleRate'),
-            sampleRateValue: this.dialog.querySelector('#sampleRateValue'),
-            systemInstructionsInput: this.dialog.querySelector('#systemInstructions'),
-            fpsInput: this.dialog.querySelector('#fps'),
-            fpsValue: this.dialog.querySelector('#fpsValue'),
-            resizeWidthInput: this.dialog.querySelector('#resizeWidth'),
-            resizeWidthValue: this.dialog.querySelector('#resizeWidthValue'),
-            qualityInput: this.dialog.querySelector('#quality'),
-            qualityValue: this.dialog.querySelector('#qualityValue'),
-            temperatureInput: this.dialog.querySelector('#temperature'),
-            temperatureValue: this.dialog.querySelector('#temperatureValue'),
-            topPInput: this.dialog.querySelector('#topP'),
-            topPValue: this.dialog.querySelector('#topPValue'),
-            topKInput: this.dialog.querySelector('#topK'),
-            topKValue: this.dialog.querySelector('#topKValue'),
-            harassmentInput: this.dialog.querySelector('#harassmentThreshold'),
-            harassmentValue: this.dialog.querySelector('#harassmentValue'),
-            dangerousInput: this.dialog.querySelector('#dangerousContentThreshold'),
-            dangerousValue: this.dialog.querySelector('#dangerousValue'),
-            sexualInput: this.dialog.querySelector('#sexuallyExplicitThreshold'),
-            sexualValue: this.dialog.querySelector('#sexualValue'),
-            civicInput: this.dialog.querySelector('#civicIntegrityThreshold'),
-            civicValue: this.dialog.querySelector('#civicValue'),
-            saveBtn: this.dialog.querySelector('#settingsSaveBtn')
+
+            // Tabs & Content Panes
+            tabs: queryAll('.settings-tab'),
+            tabContents: queryAll('.tab-content'),
+
+            // API Tab
+            apiKeyInput: query('#apiKey'),
+            deepgramApiKeyInput: query('#deepgramApiKey'),
+
+            // UI Tab
+            themeToggle: query('#themeToggle'),
+            textSizeInput: query('#textSize'),
+            textSizeValue: query('#textSizeValue'),
+            timestampToggle: query('#timestampToggle'),
+            speakToggle: query('#speakToggle'),
+
+            // System Tab
+            systemInstructionsInput: query('#systemInstructions'),
+
+            // Media Tab
+            fpsInput: query('#fps'),
+            fpsValue: query('#fpsValue'),
+            resizeWidthInput: query('#resizeWidth'),
+            resizeWidthValue: query('#resizeWidthValue'),
+            qualityInput: query('#quality'),
+            qualityValue: query('#qualityValue'),
+            voiceSelect: query('#voice'),
+            sampleRateInput: query('#sampleRate'),
+            sampleRateValue: query('#sampleRateValue'),
+
+            // Advanced Tab
+            temperatureInput: query('#temperature'),
+            temperatureValue: query('#temperatureValue'),
+            topPInput: query('#topP'),
+            topPValue: query('#topPValue'),
+            topKInput: query('#topK'),
+            topKValue: query('#topKValue'),
+
+            // Safety Tab
+            harassmentInput: query('#harassmentThreshold'),
+            harassmentValue: query('#harassmentValue'),
+            hateSpeechInput: query('#hateSpeechThreshold'), // Assuming ID exists in template
+            hateSpeechValue: query('#hateSpeechValue'),   // Assuming ID exists in template
+            dangerousInput: query('#dangerousContentThreshold'),
+            dangerousValue: query('#dangerousValue'),
+            sexualInput: query('#sexuallyExplicitThreshold'),
+            sexualValue: query('#sexualValue'),
+            civicInput: query('#civicIntegrityThreshold'),
+            civicValue: query('#civicValue'),
+
+            // Buttons
+            saveBtn: query('#settingsSaveBtn'),
+            closeBtn: query('.settings-close-btn') // Also cache close button if needed elsewhere
         };
+        // console.debug("SettingsManager elements cached:", this.elements);
     }
 
-    bindEvents() {
-        // Save settings (from original code)
+    /** Binds event listeners to the cached elements within the dialog. */
+    _bindEvents() {
+        // --- Save Button ---
         if (this.elements.saveBtn) {
             this.elements.saveBtn.addEventListener('click', () => {
-                this.saveSettings();
+                this._saveSettings();
                 this.hide();
+                // Dispatch a custom event to notify other parts of the app that settings might have changed
+                // Example: Agent might need to reload config, ThemeManager might update theme
                 const event = new CustomEvent('settingsUpdated');
                 document.dispatchEvent(event);
+                console.info("Settings saved and 'settingsUpdated' event dispatched.");
             });
         }
-        // Tab switching (from original code)
-        if (this.elements.tabs) {
+
+        // --- Tab Switching ---
+        if (this.elements.tabs && this.elements.tabs.length > 0) {
             this.elements.tabs.forEach(tab => {
-                tab.addEventListener('click', () => this.switchTab(tab.dataset.tab));
+                // Use dataset.tab to link tab button to content pane ID
+                const tabId = tab.dataset.tab;
+                if (tabId) {
+                    tab.addEventListener('click', () => this._switchTab(tabId));
+                } else {
+                    console.warn("Settings tab found without 'data-tab' attribute:", tab);
+                }
             });
         }
 
-        // Add input listeners for real-time value updates (from original code)
-        const inputElements = [
-            'sampleRateInput', 'temperatureInput', 'topPInput', 'topKInput',
-            'fpsInput', 'resizeWidthInput', 'qualityInput', 'harassmentInput',
-            'dangerousInput', 'sexualInput', 'civicInput'
-        ];
+        // --- Real-time Value Updates for Sliders/Inputs ---
+        // List of input elements and their corresponding display value elements
+        const valueUpdateMappings = {
+            sampleRateInput: 'sampleRateValue',
+            temperatureInput: 'temperatureValue',
+            topPInput: 'topPValue',
+            topKInput: 'topKValue',
+            fpsInput: 'fpsValue',
+            resizeWidthInput: 'resizeWidthValue',
+            qualityInput: 'qualityValue',
+            harassmentInput: 'harassmentValue',
+            hateSpeechInput: 'hateSpeechValue',
+            dangerousInput: 'dangerousValue',
+            sexualInput: 'sexualValue',
+            civicInput: 'civicValue',
+            textSizeInput: 'textSizeValue' // Include text size here as well
+        };
 
-        inputElements.forEach(elementName => {
-            if (this.elements[elementName]) {
-                this.elements[elementName].addEventListener('input', () => this.updateDisplayValues());
+        Object.entries(valueUpdateMappings).forEach(([inputId, valueId]) => {
+            const inputElement = this.elements[inputId];
+            if (inputElement) {
+                inputElement.addEventListener('input', () => {
+                    this._updateDisplayValues(); // Update all display values on any input change
+                    // Special handling for text size to apply style immediately
+                    if (inputId === 'textSizeInput') {
+                        // Debouncing this could improve performance slightly on rapid sliding, but likely negligible
+                        this._applyTextSize();
+                    }
+                });
             }
         });
-        
-        // Special handling for text size to update in real-time
-        if (this.elements.textSizeInput) {
-            this.elements.textSizeInput.addEventListener('input', () => {
-                this.updateDisplayValues();
-                this.applyTextSize();
+
+        // --- Specific Toggle Handlers (if needed beyond saving) ---
+        // Example: Theme toggle might apply theme instantly via ThemeManager
+        if (this.elements.themeToggle) {
+            this.elements.themeToggle.addEventListener('change', () => {
+                // This assumes a ThemeManager exists and handles the logic
+                // You might need to import or access it differently.
+                // For now, saving handles the persistence, and theme applies on load/save event.
+                console.debug("Theme toggle changed. Theme will apply on save/reload via settingsUpdated event.");
             });
         }
+
+        // Example: Speak toggle updates global state or ChatManager immediately
+        if (this.elements.speakToggle) {
+            this.elements.speakToggle.addEventListener('change', (event) => {
+                const isEnabled = event.target.checked;
+                window.speechEnabled = isEnabled; // Update global flag (used by dom/events.js)
+                // Notify ChatManager immediately
+                if (window.chatManager && window.chatManager.updateSpeechStatus) {
+                    window.chatManager.updateSpeechStatus(isEnabled);
+                }
+                // Persist immediately? Or wait for Save button? Currently waits for save.
+            });
+        }
+
     }
 
-    switchTab(tabId) {
-        // Hide all tab contents (from original code)
+    /** Switches the visible tab content based on the clicked tab's data attribute. */
+    _switchTab(tabId) {
+        if (!this.elements.tabs || !this.elements.tabContents) return;
+
+        // Hide all content panes
         this.elements.tabContents.forEach(content => {
             content.classList.remove('active');
         });
 
-        // Show the selected tab content (from original code)
-        const selectedContent = this.dialog.querySelector(`#${tabId}-tab`);
-        if (selectedContent) {
-            selectedContent.classList.add('active');
-        }
-
-        // Update tab state (from original code)
+        // Deactivate all tabs
         this.elements.tabs.forEach(tab => {
             tab.classList.remove('active');
-            if (tab.dataset.tab === tabId) {
-                tab.classList.add('active');
-            }
         });
-    }
 
-    loadSettings() { //from original code
-        // Load values from localStorage
-        if (this.elements.apiKeyInput) this.elements.apiKeyInput.value = localStorage.getItem('apiKey') || '';
-        if (this.elements.deepgramApiKeyInput) this.elements.deepgramApiKeyInput.value = localStorage.getItem('deepgramApiKey') || '';
-        if (this.elements.themeToggle) this.elements.themeToggle.checked = localStorage.getItem('darkMode') === 'true';
-        if (this.elements.textSizeInput) this.elements.textSizeInput.value = localStorage.getItem('textSize') || '16';
-        if (this.elements.timestampToggle) this.elements.timestampToggle.checked = localStorage.getItem('showTimestamps') === 'true';
-        if (this.elements.voiceSelect) this.elements.voiceSelect.value = localStorage.getItem('voiceName') || 'Aoede';
-        if (this.elements.sampleRateInput) this.elements.sampleRateInput.value = localStorage.getItem('sampleRate') || '27000';
-        if (this.elements.systemInstructionsInput) this.elements.systemInstructionsInput.value = localStorage.getItem('systemInstructions') || 'You are a helpful assistant';
-        if (this.elements.temperatureInput) this.elements.temperatureInput.value = localStorage.getItem('temperature') || '1.8';
-        if (this.elements.topPInput) this.elements.topPInput.value = localStorage.getItem('top_p') || '0.95';
-        if (this.elements.topKInput) this.elements.topKInput.value = localStorage.getItem('top_k') || '65';
-
-        // Initialize screen & camera settings
-        if (this.elements.fpsInput) this.elements.fpsInput.value = localStorage.getItem('fps') || '1';
-        if (this.elements.resizeWidthInput) this.elements.resizeWidthInput.value = localStorage.getItem('resizeWidth') || '640';
-        if (this.elements.qualityInput) this.elements.qualityInput.value = localStorage.getItem('quality') || '0.3';
-
-        // Initialize safety settings
-        if (this.elements.harassmentInput) this.elements.harassmentInput.value = localStorage.getItem('harassmentThreshold') || '3';
-        if (this.elements.dangerousInput) this.elements.dangerousInput.value = localStorage.getItem('dangerousContentThreshold') || '3';
-        if (this.elements.sexualInput) this.elements.sexualInput.value = localStorage.getItem('sexuallyExplicitThreshold') || '3';
-        if (this.elements.civicInput) this.elements.civicInput.value = localStorage.getItem('civicIntegrityThreshold') || '3';
-        
-        // Load speak toggle
-        const speakToggle = this.dialog.querySelector('#speakToggle');
-        if (speakToggle) {
-            speakToggle.checked = localStorage.getItem('speakEnabled') === 'true';
+        // Show the selected content pane
+        const selectedContent = this.dialog.querySelector(`#${tabId}-tab`); // Content panes have IDs like "api-tab"
+        if (selectedContent) {
+            selectedContent.classList.add('active');
+        } else {
+            console.warn(`No tab content found for ID: #${tabId}-tab`);
         }
 
-        this.updateDisplayValues();
-        this.applyTextSize(); // Apply text size immediately
-    }
-    
-    applyTextSize() {
-        const size = this.elements.textSizeInput ? this.elements.textSizeInput.value : '16';
-        document.documentElement.style.setProperty('--text-size', `${size}px`);
+        // Activate the clicked tab
+        const selectedTab = this.dialog.querySelector(`.settings-tab[data-tab="${tabId}"]`);
+        if (selectedTab) {
+            selectedTab.classList.add('active');
+        }
     }
 
-    saveSettings() { //from original code
-        if (this.elements.apiKeyInput) localStorage.setItem('apiKey', this.elements.apiKeyInput.value);
-        if (this.elements.deepgramApiKeyInput) localStorage.setItem('deepgramApiKey', this.elements.deepgramApiKeyInput.value);
-        if (this.elements.themeToggle) localStorage.setItem('darkMode', this.elements.themeToggle.checked);
-        if (this.elements.textSizeInput) localStorage.setItem('textSize', this.elements.textSizeInput.value);
-        if (this.elements.timestampToggle) localStorage.setItem('showTimestamps', this.elements.timestampToggle.checked);
-        if (this.elements.voiceSelect) localStorage.setItem('voiceName', this.elements.voiceSelect.value);
-        if (this.elements.sampleRateInput) localStorage.setItem('sampleRate', this.elements.sampleRateInput.value);
-        if (this.elements.systemInstructionsInput) localStorage.setItem('systemInstructions', this.elements.systemInstructionsInput.value);
-        if (this.elements.temperatureInput) localStorage.setItem('temperature', this.elements.temperatureInput.value);
-        if (this.elements.topPInput) localStorage.setItem('top_p', this.elements.topPInput.value);
-        if (this.elements.topKInput) localStorage.setItem('top_k', this.elements.topKInput.value);
-
-        // Save screen & camera settings
-        if (this.elements.fpsInput) localStorage.setItem('fps', this.elements.fpsInput.value);
-        if (this.elements.resizeWidthInput) localStorage.setItem('resizeWidth', this.elements.resizeWidthInput.value);
-        if (this.elements.qualityInput) localStorage.setItem('quality', this.elements.qualityInput.value);
-
-        // Save safety settings
-        if (this.elements.harassmentInput) localStorage.setItem('harassmentThreshold', this.elements.harassmentInput.value);
-        if (this.elements.dangerousInput) localStorage.setItem('dangerousContentThreshold', this.elements.dangerousInput.value);
-        if (this.elements.sexualInput) localStorage.setItem('sexuallyExplicitThreshold', this.elements.sexualInput.value);
-        if (this.elements.civicInput) localStorage.setItem('civicIntegrityThreshold', this.elements.civicInput.value);
-        
-        // Save speak setting
-        const speakToggle = this.dialog.querySelector('#speakToggle');
-        if (speakToggle) {
-            localStorage.setItem('speakEnabled', speakToggle.checked);
-            window.speechEnabled = speakToggle.checked;
-            
-            // Update speak button state
-            const speakBtn = document.getElementById('speakBtn');
-            if (speakBtn) {
-                if (window.speechEnabled) {
-                    speakBtn.classList.add('active');
-                } else {
-                    speakBtn.classList.remove('active');
-                    // Stop any ongoing speech
-                    if ('speechSynthesis' in window) {
-                        window.speechSynthesis.cancel();
-                    }
-                }
+    /** Loads settings from localStorage and populates the dialog fields. */
+    _loadSettings() {
+        console.info("Loading settings from localStorage...");
+        // Helper to load item safely
+        const load = (key, defaultValue = '') => {
+            try {
+                return localStorage.getItem(key) || defaultValue;
+            } catch (error) {
+                console.error(`Error reading localStorage key "${key}":`, error);
+                return defaultValue;
             }
+        };
+        // Helper to load boolean toggle state
+        const loadBool = (key, defaultValue = false) => load(key, defaultValue.toString()) === 'true';
+
+        try {
+            // API Tab
+            if (this.elements.apiKeyInput) this.elements.apiKeyInput.value = load('apiKey');
+            if (this.elements.deepgramApiKeyInput) this.elements.deepgramApiKeyInput.value = load('deepgramApiKey');
+
+            // UI Tab
+            if (this.elements.themeToggle) this.elements.themeToggle.checked = loadBool('darkMode');
+            if (this.elements.textSizeInput) this.elements.textSizeInput.value = load('textSize', '16');
+            if (this.elements.timestampToggle) this.elements.timestampToggle.checked = loadBool('showTimestamps');
+            if (this.elements.speakToggle) this.elements.speakToggle.checked = loadBool('speakEnabled');
+
+            // System Tab
+            if (this.elements.systemInstructionsInput) this.elements.systemInstructionsInput.value = load('systemInstructions', 'You are a helpful assistant.');
+
+            // Media Tab
+            if (this.elements.fpsInput) this.elements.fpsInput.value = load('fps', '5');
+            if (this.elements.resizeWidthInput) this.elements.resizeWidthInput.value = load('resizeWidth', '640');
+            if (this.elements.qualityInput) this.elements.qualityInput.value = load('quality', '0.4');
+            if (this.elements.voiceSelect) this.elements.voiceSelect.value = load('voiceName', 'Aoede');
+            if (this.elements.sampleRateInput) this.elements.sampleRateInput.value = load('sampleRate', '24000'); // Default often 24k for Gemini models
+
+            // Advanced Tab
+            if (this.elements.temperatureInput) this.elements.temperatureInput.value = load('temperature', '1.0'); // Adjusted default
+            if (this.elements.topPInput) this.elements.topPInput.value = load('top_p', '0.95');
+            if (this.elements.topKInput) this.elements.topKInput.value = load('top_k', '40'); // Adjusted default
+
+            // Safety Tab
+            if (this.elements.harassmentInput) this.elements.harassmentInput.value = load('harassmentThreshold', '3');
+            if (this.elements.hateSpeechInput) this.elements.hateSpeechInput.value = load('hateSpeechThreshold', '3'); // Load hate speech
+            if (this.elements.dangerousInput) this.elements.dangerousInput.value = load('dangerousContentThreshold', '3');
+            if (this.elements.sexualInput) this.elements.sexualInput.value = load('sexuallyExplicitThreshold', '3');
+            if (this.elements.civicInput) this.elements.civicInput.value = load('civicIntegrityThreshold', '3');
+
+            // Update displayed values (like "16px", "High", etc.)
+            this._updateDisplayValues();
+            // Apply text size immediately on load
+            this._applyTextSize();
+
+            console.info("Settings loaded successfully.");
+        } catch (error) {
+            console.error("Error occurred during settings load:", error);
         }
     }
 
-    updateDisplayValues() { //from original code
-        if (this.elements.textSizeValue) this.elements.textSizeValue.textContent = this.elements.textSizeInput.value + 'px';
-        if (this.elements.sampleRateValue) this.elements.sampleRateValue.textContent = this.elements.sampleRateInput.value + ' Hz';
-        if (this.elements.temperatureValue) this.elements.temperatureValue.textContent = this.elements.temperatureInput.value;
-        if (this.elements.topPValue) this.elements.topPValue.textContent = this.elements.topPInput.value;
-        if (this.elements.topKValue) this.elements.topKValue.textContent = this.elements.topKInput.value;
-        if (this.elements.fpsValue) this.elements.fpsValue.textContent = this.elements.fpsInput.value + ' FPS';
-        if (this.elements.resizeWidthValue) this.elements.resizeWidthValue.textContent = this.elements.resizeWidthInput.value + 'px';
-        if (this.elements.qualityValue) this.elements.qualityValue.textContent = this.elements.qualityInput.value;
-        if (this.elements.harassmentValue) this.elements.harassmentValue.textContent = this.getThresholdLabel(this.elements.harassmentInput.value);
-        if (this.elements.dangerousValue) this.elements.dangerousValue.textContent = this.getThresholdLabel(this.elements.dangerousInput.value);
-        if (this.elements.sexualValue) this.elements.sexualValue.textContent = this.getThresholdLabel(this.elements.sexualInput.value);
-        if (this.elements.civicValue) this.elements.civicValue.textContent = this.getThresholdLabel(this.elements.civicInput.value);
+    /** Applies the current text size setting to the document root. */
+    _applyTextSize() {
+        if (this.elements.textSizeInput) {
+            const size = this.elements.textSizeInput.value || '16'; // Default to 16 if value missing
+            // Apply as CSS variable - assumes :root { font-size: var(--text-size); } or similar in CSS
+            document.documentElement.style.setProperty('--text-size', `${size}px`);
+            // console.debug(`Applied text size: ${size}px`);
+        }
     }
 
-    getThresholdLabel(value) { //from original code
-        const labels = {
-            '0': 'None',
-            '1': 'Low',
-            '2': 'Medium',
-            '3': 'High'
+    /** Saves the current values from the dialog fields to localStorage. */
+    _saveSettings() {
+        console.info("Saving settings to localStorage...");
+        // Helper to save item safely
+        const save = (key, value) => {
+            try {
+                if (value !== undefined && value !== null) {
+                    localStorage.setItem(key, value);
+                } else {
+                    localStorage.removeItem(key); // Remove item if value is null/undefined
+                }
+            } catch (error) {
+                console.error(`Error writing localStorage key "${key}":`, error);
+                // Potentially notify user (e.g., if storage quota exceeded)
+            }
         };
-        return labels[value] || value;
+        // Helper to save boolean toggle state
+        const saveBool = (key, checked) => save(key, checked ? 'true' : 'false');
+
+        try {
+            // API Tab
+            if (this.elements.apiKeyInput) save('apiKey', this.elements.apiKeyInput.value);
+            if (this.elements.deepgramApiKeyInput) save('deepgramApiKey', this.elements.deepgramApiKeyInput.value);
+
+            // UI Tab
+            if (this.elements.themeToggle) saveBool('darkMode', this.elements.themeToggle.checked);
+            if (this.elements.textSizeInput) save('textSize', this.elements.textSizeInput.value);
+            if (this.elements.timestampToggle) saveBool('showTimestamps', this.elements.timestampToggle.checked);
+            if (this.elements.speakToggle) saveBool('speakEnabled', this.elements.speakToggle.checked);
+
+            // System Tab
+            if (this.elements.systemInstructionsInput) save('systemInstructions', this.elements.systemInstructionsInput.value);
+
+            // Media Tab
+            if (this.elements.fpsInput) save('fps', this.elements.fpsInput.value);
+            if (this.elements.resizeWidthInput) save('resizeWidth', this.elements.resizeWidthInput.value);
+            if (this.elements.qualityInput) save('quality', this.elements.qualityInput.value);
+            if (this.elements.voiceSelect) save('voiceName', this.elements.voiceSelect.value);
+            if (this.elements.sampleRateInput) save('sampleRate', this.elements.sampleRateInput.value);
+
+            // Advanced Tab
+            if (this.elements.temperatureInput) save('temperature', this.elements.temperatureInput.value);
+            if (this.elements.topPInput) save('top_p', this.elements.topPInput.value);
+            if (this.elements.topKInput) save('top_k', this.elements.topKInput.value);
+
+            // Safety Tab
+            if (this.elements.harassmentInput) save('harassmentThreshold', this.elements.harassmentInput.value);
+            if (this.elements.hateSpeechInput) save('hateSpeechThreshold', this.elements.hateSpeechInput.value); // Save hate speech
+            if (this.elements.dangerousInput) save('dangerousContentThreshold', this.elements.dangerousInput.value);
+            if (this.elements.sexualInput) save('sexuallyExplicitThreshold', this.elements.sexualInput.value);
+            if (this.elements.civicInput) save('civicIntegrityThreshold', this.elements.civicInput.value);
+
+            console.info("Settings saved successfully.");
+        } catch (error) {
+            console.error("Error occurred during settings save:", error);
+        }
     }
 
+    /** Updates the text content of display elements (spans next to sliders) based on current input values. */
+    _updateDisplayValues() {
+        // Helper to update text content safely
+        const updateText = (element, text) => {
+            if (element) {
+                element.textContent = text;
+            }
+        };
+
+        // UI Tab
+        if (this.elements.textSizeInput) updateText(this.elements.textSizeValue, `${this.elements.textSizeInput.value}px`);
+
+        // Media Tab
+        if (this.elements.sampleRateInput) updateText(this.elements.sampleRateValue, `${this.elements.sampleRateInput.value} Hz`);
+        if (this.elements.fpsInput) updateText(this.elements.fpsValue, `${this.elements.fpsInput.value} FPS`);
+        if (this.elements.resizeWidthInput) updateText(this.elements.resizeWidthValue, `${this.elements.resizeWidthInput.value}px`);
+        if (this.elements.qualityInput) updateText(this.elements.qualityValue, this.elements.qualityInput.value);
+
+        // Advanced Tab
+        if (this.elements.temperatureInput) updateText(this.elements.temperatureValue, this.elements.temperatureInput.value);
+        if (this.elements.topPInput) updateText(this.elements.topPValue, this.elements.topPInput.value);
+        if (this.elements.topKInput) updateText(this.elements.topKValue, this.elements.topKInput.value);
+
+        // Safety Tab - Use label mapping
+        const getLabel = (value) => this._getThresholdLabel(value);
+        if (this.elements.harassmentInput) updateText(this.elements.harassmentValue, getLabel(this.elements.harassmentInput.value));
+        if (this.elements.hateSpeechInput) updateText(this.elements.hateSpeechValue, getLabel(this.elements.hateSpeechInput.value));
+        if (this.elements.dangerousInput) updateText(this.elements.dangerousValue, getLabel(this.elements.dangerousInput.value));
+        if (this.elements.sexualInput) updateText(this.elements.sexualValue, getLabel(this.elements.sexualInput.value));
+        if (this.elements.civicInput) updateText(this.elements.civicValue, getLabel(this.elements.civicInput.value));
+    }
+
+    /** Converts a numeric safety threshold value (0-3) to a human-readable label. */
+    _getThresholdLabel(value) {
+        const labels = {
+            '0': 'Block None', // Use string keys
+            '1': 'Block High Only',
+            '2': 'Block Medium+',
+            '3': 'Block Low+'
+        };
+        return labels[value] || 'Unknown'; // Default fallback
+    }
+
+    /** Shows the settings dialog. Initializes if needed. */
     show() {
+        // Ensure dialog DOM is created first
         this.initialize();
-        if (!this.isOpen && this.overlay) {
-            document.body.appendChild(this.overlay);
+
+        // Check if initialization was successful and elements exist
+        if (!this.isInitialized || !this.overlay || !this.dialog) {
+            console.error("Cannot show settings: Initialization failed or elements missing.");
+            return;
+        }
+
+        if (!this.isOpen) {
+            this._loadSettings(); // Load latest settings when opening
             this.overlay.classList.add('active');
             this.dialog.classList.add('active');
+            this.overlay.setAttribute('aria-hidden', 'false'); // Make visible to accessibility tree
             this.isOpen = true;
-            this.loadSettings();
+            console.info("Settings dialog shown.");
+            // Set initial focus, e.g., on the first tab or input
+            this.elements.tabs?.[0]?.focus(); // Focus first tab if available
+        } else {
+            // console.debug("Settings dialog already open.");
         }
     }
 
+    /** Hides the settings dialog. */
     hide() {
-        if (this.isOpen && this.overlay) {
+        // Check if elements exist before trying to hide
+        if (!this.isInitialized || !this.overlay || !this.dialog) {
+            // console.debug("Cannot hide settings: Elements missing or not initialized.");
+            return;
+        }
+
+        if (this.isOpen) {
             this.overlay.classList.remove('active');
             this.dialog.classList.remove('active');
+            this.overlay.setAttribute('aria-hidden', 'true'); // Hide from accessibility tree
+
+            // Consider removing the dialog from DOM after transition, or keep it for performance
+            // Using setTimeout can be brittle. If CSS transitions are used, listen for 'transitionend'.
+            // For simplicity, we'll keep the elements in the DOM for now.
+            /*
+            const transitionDuration = 300; // Match CSS transition duration
             setTimeout(() => {
-                if (!this.isOpen && this.overlay.parentNode) {
-                    document.body.removeChild(this.overlay);
+                // Check if still hidden before removing (might have been re-opened)
+                if (!this.isOpen && this.overlay && this.overlay.parentNode && !this.overlay.classList.contains('active')) {
+                   // Only remove if truly hidden and not re-opened during timeout
+                   // document.body.removeChild(this.overlay);
+                   // this.isInitialized = false; // Reset if removing from DOM
                 }
-            }, 300); // Short delay to allow for transition
+            }, transitionDuration);
+            */
+
             this.isOpen = false;
+            console.info("Settings dialog hidden.");
+            // Optionally return focus to the element that opened the dialog
+            // (Requires storing the trigger element)
+        } else {
+            // console.debug("Settings dialog already hidden.");
         }
     }
 
+    /** Toggles the visibility of the settings dialog. */
     toggleDialog() {
         if (this.isOpen) {
             this.hide();
@@ -299,5 +533,5 @@ class SettingsManager {
     }
 }
 
-// Export a single instance
+// Export a single instance (Singleton pattern)
 export default new SettingsManager();
