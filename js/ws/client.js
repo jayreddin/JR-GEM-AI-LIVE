@@ -191,13 +191,15 @@ export class GeminiWebsocketClient extends EventEmitter {
             clientContent: { 
                 turns: [{
                     role: 'user', 
-                    parts: { text: text } // TODO: Should it be in the list or not?
+                    parts: [{ text: text }]
                 }], 
                 turnComplete: endOfTurn 
             } 
         };
         await this.sendJSON(formattedText);
         console.debug(`Text sent to ${this.name}:`, text);
+        // Emit text_sent event
+        this.emit('text_sent', text);
     }
     /**
      * Sends the result of the tool call to Gemini.

@@ -294,4 +294,23 @@ export function setupEventListeners(elements, settingsManager, agent, themeManag
             }
         });
     }
+
+    // Mic button click
+    const micBtn = document.getElementById('micBtn');
+    if (micBtn) {
+        micBtn.addEventListener('click', async () => {
+            try {
+                if (!agent.initialized) {
+                    await agent.initialize();
+                }
+                micBtn.classList.toggle('active');
+                await agent.toggleMic();
+                addStatusMessage(micBtn.classList.contains('active') ? 'Microphone activated' : 'Microphone deactivated');
+            } catch (error) {
+                console.error('Microphone error:', error);
+                addStatusMessage('Microphone access error');
+                micBtn.classList.remove('active');
+            }
+        });
+    }
 }

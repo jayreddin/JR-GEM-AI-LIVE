@@ -54,17 +54,18 @@ geminiAgent.on('text', (text) => {
     chatManager.updateStreamingMessage(text);
 });
 
-geminiAgent.connect();
-
-// Initialize audio components after connection
-geminiAgent.on('connected', async () => {
+// Connect and initialize the agent
+(async () => {
     try {
-        await geminiAgent.initialize();
-        console.log('Audio components initialized successfully');
+        await geminiAgent.connect();
+        console.log('Connected to Gemini API successfully');
+        
+        // Initialize basic components without trying to initialize audio yet
+        geminiAgent.emit('connected');
     } catch (error) {
-        console.error('Failed to initialize audio components:', error);
+        console.error('Failed to connect to Gemini API:', error);
     }
-});
+})();
 
 // Initialize theme manager
 const themeManager = new ThemeManager();
