@@ -56,6 +56,16 @@ geminiAgent.on('text', (text) => {
 
 geminiAgent.connect();
 
+// Initialize audio components after connection
+geminiAgent.on('connected', async () => {
+    try {
+        await geminiAgent.initialize();
+        console.log('Audio components initialized successfully');
+    } catch (error) {
+        console.error('Failed to initialize audio components:', error);
+    }
+});
+
 // Initialize theme manager
 const themeManager = new ThemeManager();
 
