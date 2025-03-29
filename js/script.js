@@ -59,7 +59,7 @@ geminiAgent.on('text', (text) => {
     try {
         await geminiAgent.connect();
         console.log('Connected to Gemini API successfully');
-        
+
         // Initialize basic components without trying to initialize audio yet
         geminiAgent.emit('connected');
     } catch (error) {
