@@ -1,29 +1,40 @@
-
 import { settingsTemplate } from './settings-template.js';
 
 class SettingsManager {
     constructor() {
         this.dialog = null;
         this.overlay = null;
+        this.isOpen = false;
         this.elements = {};
-        this.createSettingsDialog();
-        this.bindEvents();
     }
 
-    createSettingsDialog() {
-        // Create dialog and overlay
-        this.dialog = document.createElement('div');
-        this.dialog.className = 'settings-dialog';
-        this.dialog.innerHTML = settingsTemplate;
+    initialize() {
+        // Create the dialog element if it doesn't exist
+        if (!this.dialog) {
+            // Create the overlay element
+            this.overlay = document.createElement('div');
+            this.overlay.className = 'settings-overlay';
+            this.overlay.addEventListener('click', () => this.hide());
 
-        this.overlay = document.createElement('div');
-        this.overlay.className = 'settings-overlay';
+            // Create the dialog element
+            this.dialog = document.createElement('div');
+            this.dialog.className = 'settings-dialog';
+            this.dialog.innerHTML = settingsTemplate;
 
-        document.body.appendChild(this.dialog);
-        document.body.appendChild(this.overlay);
+            // Add close button event listener
+            const closeBtn = this.dialog.querySelector('.settings-close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => this.hide());
+            }
 
-        // Cache all the elements
-        this.cacheElements();
+            // Add the dialog to the overlay
+            this.overlay.appendChild(this.dialog);
+
+            // Cache all the elements (from original code)
+            this.cacheElements();
+            this.bindEvents();
+
+        }
     }
 
     cacheElements() {
@@ -74,29 +85,23 @@ class SettingsManager {
     }
 
     bindEvents() {
-        // Close settings when clicking overlay
-        this.overlay.addEventListener('click', () => this.hideDialog());
-
-        // Prevent dialog close when clicking inside dialog
-        this.dialog.addEventListener('click', (e) => e.stopPropagation());
-
-        // Save settings
-        this.elements.saveBtn.addEventListener('click', () => {
-            this.saveSettings();
-            this.hideDialog();
-            // Dispatch event to notify settings changed
-            const event = new CustomEvent('settingsUpdated');
-            document.dispatchEvent(event);
-        });
-
-        // Tab switching
+        // Save settings (from original code)
+        if (this.elements.saveBtn) {
+            this.elements.saveBtn.addEventListener('click', () => {
+                this.saveSettings();
+                this.hide();
+                const event = new CustomEvent('settingsUpdated');
+                document.dispatchEvent(event);
+            });
+        }
+        // Tab switching (from original code)
         if (this.elements.tabs) {
             this.elements.tabs.forEach(tab => {
                 tab.addEventListener('click', () => this.switchTab(tab.dataset.tab));
             });
         }
 
-        // Add input listeners for real-time value updates
+        // Add input listeners for real-time value updates (from original code)
         const inputElements = [
             'sampleRateInput', 'temperatureInput', 'topPInput', 'topKInput',
             'fpsInput', 'resizeWidthInput', 'qualityInput', 'harassmentInput',
@@ -111,18 +116,18 @@ class SettingsManager {
     }
 
     switchTab(tabId) {
-        // Hide all tab contents
+        // Hide all tab contents (from original code)
         this.elements.tabContents.forEach(content => {
             content.classList.remove('active');
         });
 
-        // Show the selected tab content
+        // Show the selected tab content (from original code)
         const selectedContent = this.dialog.querySelector(`#${tabId}-tab`);
         if (selectedContent) {
             selectedContent.classList.add('active');
         }
 
-        // Update tab state
+        // Update tab state (from original code)
         this.elements.tabs.forEach(tab => {
             tab.classList.remove('active');
             if (tab.dataset.tab === tabId) {
@@ -131,7 +136,7 @@ class SettingsManager {
         });
     }
 
-    loadSettings() {
+    loadSettings() { //from original code
         // Load values from localStorage
         if (this.elements.apiKeyInput) this.elements.apiKeyInput.value = localStorage.getItem('apiKey') || '';
         if (this.elements.deepgramApiKeyInput) this.elements.deepgramApiKeyInput.value = localStorage.getItem('deepgramApiKey') || '';
@@ -159,7 +164,7 @@ class SettingsManager {
         this.updateDisplayValues();
     }
 
-    saveSettings() {
+    saveSettings() { //from original code
         if (this.elements.apiKeyInput) localStorage.setItem('apiKey', this.elements.apiKeyInput.value);
         if (this.elements.deepgramApiKeyInput) localStorage.setItem('deepgramApiKey', this.elements.deepgramApiKeyInput.value);
         if (this.elements.themeToggle) localStorage.setItem('darkMode', this.elements.themeToggle.checked);
@@ -184,7 +189,7 @@ class SettingsManager {
         if (this.elements.civicInput) localStorage.setItem('civicIntegrityThreshold', this.elements.civicInput.value);
     }
 
-    updateDisplayValues() {
+    updateDisplayValues() { //from original code
         if (this.elements.textSizeValue) this.elements.textSizeValue.textContent = this.elements.textSizeInput.value + 'px';
         if (this.elements.sampleRateValue) this.elements.sampleRateValue.textContent = this.elements.sampleRateInput.value + ' Hz';
         if (this.elements.temperatureValue) this.elements.temperatureValue.textContent = this.elements.temperatureInput.value;
@@ -199,7 +204,7 @@ class SettingsManager {
         if (this.elements.civicValue) this.elements.civicValue.textContent = this.getThresholdLabel(this.elements.civicInput.value);
     }
 
-    getThresholdLabel(value) {
+    getThresholdLabel(value) { //from original code
         const labels = {
             '0': 'None',
             '1': 'Low',
@@ -209,22 +214,27 @@ class SettingsManager {
         return labels[value] || value;
     }
 
-    showDialog() {
-        this.dialog.classList.add('active');
-        this.overlay.classList.add('active');
-        this.loadSettings();
+    show() {
+        this.initialize();
+        if (!this.isOpen && this.overlay) {
+            document.body.appendChild(this.overlay);
+            this.isOpen = true;
+            this.loadSettings();
+        }
     }
 
-    hideDialog() {
-        this.dialog.classList.remove('active');
-        this.overlay.classList.remove('active');
+    hide() {
+        if (this.isOpen && this.overlay) {
+            document.body.removeChild(this.overlay);
+            this.isOpen = false;
+        }
     }
 
     toggleDialog() {
-        if (this.dialog.classList.contains('active')) {
-            this.hideDialog();
+        if (this.isOpen) {
+            this.hide();
         } else {
-            this.showDialog();
+            this.show();
         }
     }
 }
