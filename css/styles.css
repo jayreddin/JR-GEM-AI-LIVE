@@ -301,16 +301,23 @@ body {
     justify-content: center;
 }
 
-.power-btn, .new-chat-btn {
-    position: absolute;
+.header-buttons {
+    position: fixed;
     top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    z-index: 10;
+}
+
+.power-btn, .new-chat-btn, .settings-btn {
     padding: 10px;
     background: linear-gradient(to bottom, #4CAF50, #2E7D32);
     color: white;
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    z-index: 10;
     width: 40px;
     height: 40px;
     display: flex;
@@ -320,10 +327,6 @@ body {
 
 .power-btn.connected {
     background-color: var(--accent-color);
-}
-
-.new-chat-btn {
-    left: 80px;
 }
 
 

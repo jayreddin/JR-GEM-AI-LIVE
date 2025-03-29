@@ -301,3 +301,79 @@ class SettingsManager {
 
 // Export a single instance
 export default new SettingsManager();
+// Add misc settings
+function initializeMiscSettings() {
+    const miscSettings = {
+        'autoScroll': localStorage.getItem('autoScroll') === 'true',
+        'soundEffects': localStorage.getItem('soundEffects') === 'true',
+        'showTypingIndicator': localStorage.getItem('showTypingIndicator') === 'true',
+        'compactMode': localStorage.getItem('compactMode') === 'true'
+    };
+
+    const miscContainer = document.querySelector('#miscTab');
+    if (!miscContainer) return;
+
+    const settingsHTML = `
+        <div class="settings-group">
+            <label class="setting-label">
+                <span>Auto-scroll Chat</span>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="autoScrollToggle" ${miscSettings.autoScroll ? 'checked' : ''}>
+                    <span class="toggle-slider"></span>
+                </div>
+            </label>
+        </div>
+        <div class="settings-group">
+            <label class="setting-label">
+                <span>Sound Effects</span>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="soundEffectsToggle" ${miscSettings.soundEffects ? 'checked' : ''}>
+                    <span class="toggle-slider"></span>
+                </div>
+            </label>
+        </div>
+        <div class="settings-group">
+            <label class="setting-label">
+                <span>Show Typing Indicator</span>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="typingIndicatorToggle" ${miscSettings.showTypingIndicator ? 'checked' : ''}>
+                    <span class="toggle-slider"></span>
+                </div>
+            </label>
+        </div>
+        <div class="settings-group">
+            <label class="setting-label">
+                <span>Compact Mode</span>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="compactModeToggle" ${miscSettings.compactMode ? 'checked' : ''}>
+                    <span class="toggle-slider"></span>
+                </div>
+            </label>
+        </div>
+    `;
+
+    miscContainer.innerHTML = settingsHTML;
+
+    // Add event listeners
+    document.getElementById('autoScrollToggle').addEventListener('change', (e) => {
+        localStorage.setItem('autoScroll', e.target.checked);
+    });
+
+    document.getElementById('soundEffectsToggle').addEventListener('change', (e) => {
+        localStorage.setItem('soundEffects', e.target.checked);
+    });
+
+    document.getElementById('typingIndicatorToggle').addEventListener('change', (e) => {
+        localStorage.setItem('showTypingIndicator', e.target.checked);
+    });
+
+    document.getElementById('compactModeToggle').addEventListener('change', (e) => {
+        localStorage.setItem('compactMode', e.target.checked);
+        document.body.classList.toggle('compact-mode', e.target.checked);
+    });
+}
+
+// Call this function when the settings dialog is opened
+document.addEventListener('DOMContentLoaded', () => {
+    initializeMiscSettings();
+});
