@@ -229,6 +229,22 @@ export class GeminiAgent{
         console.info('Screen sharing stopped');
     }
 
+    async toggleCamera() {
+        if (this.cameraInterval) {
+            await this.stopCameraCapture();
+        } else {
+            await this.startCameraCapture();
+        }
+    }
+
+    async toggleScreenShare() {
+        if (this.screenInterval) {
+            await this.stopScreenShare();
+        } else {
+            await this.startScreenShare();
+        }
+    }
+
     /**
      * Gracefully terminates all active connections and streams.
      * Ensures proper cleanup of audio, screen sharing, and WebSocket resources.

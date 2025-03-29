@@ -33,8 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
 
                         // Add message to chat and send to agent
-                        chatManager.addUserMessage(text);
-                        await agent.sendText(text);
+                        await chatManager.addUserMessage(text);
                         elements.messageInput.value = '';
                     }
                 } catch (error) {
@@ -73,6 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Helper functions
         async function ensureAgentReady(agent) {
+            if (!agent.connected) {
+                await agent.connect();
+                showDisconnectButton();
+            }
             if (!agent.initialized) {
                 await agent.initialize();
             }
