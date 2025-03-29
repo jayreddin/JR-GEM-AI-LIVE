@@ -1,7 +1,5 @@
 import elements from './elements.js';
-import { SettingsManager } from '../settings/settings-manager.js';
-
-const settingsManager = new SettingsManager();
+import settingsManager from '../settings/settings-manager.js';
 
 /**
  * Updates UI to show disconnect button and hide connect button
@@ -238,8 +236,7 @@ export function setupEventListeners(agent) {
     });
 
     // Settings button click
-    elements.settingsBtn.addEventListener('click', () => settingsManager.show());
+    if (elements.settingsBtn) {
+        elements.settingsBtn.addEventListener('click', () => settingsManager.toggleDialog());
+    }
 }
-
-// Initialize settings
-settingsManager;

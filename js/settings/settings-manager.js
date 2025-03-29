@@ -1,6 +1,7 @@
+
 import { settingsTemplate } from './settings-template.js';
 
-export class SettingsManager {
+class SettingsManager {
     constructor() {
         this.dialog = null;
         this.overlay = null;
@@ -228,4 +229,5 @@ export class SettingsManager {
     }
 }
 
-export default SettingsManager;
+// Export a single instance
+export default new SettingsManager();
