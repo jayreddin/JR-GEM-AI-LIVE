@@ -100,7 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (elements.cameraBtn) {
             elements.cameraBtn.addEventListener('click', async () => {
                 try {
-                    await ensureAgentReady(agent);
+                    // Make sure agent is connected but don't reinitialize completely
+                    if (!agent.connected) {
+                        await agent.connect();
+                        showDisconnectButton();
+                    }
+
                     await agent.toggleCamera();
                     elements.cameraBtn.classList.toggle('active');
                     addStatusMessage(elements.cameraBtn.classList.contains('active') ? 'Camera activated' : 'Camera deactivated');
@@ -108,6 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Camera error:', error);
                     addStatusMessage('Camera access error');
                     elements.cameraBtn.classList.remove('active');
+                    // Try to clean up any hanging resources
+                    if (agent.cameraInterval) {
+                        await agent.stopCameraCapture();
+                    }
                 }
             });
         }

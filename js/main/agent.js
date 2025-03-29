@@ -150,20 +150,22 @@ export class GeminiAgent{
     }
 
     /**
-     * Starts camera capture and sends images at regular intervals
+     * Starts camera capture and sends frames at regular intervals
      */
     async startCameraCapture() {
         if (!this.connected) {
-            throw new Error('Websocket must be connected to start camera capture');
+            await this.connect();
         }
 
         try {
             await this.cameraManager.initialize();
 
-            // Set up interval to capture and send images
+            // Set up interval to capture and send frames
             this.cameraInterval = setInterval(async () => {
-                const imageBase64 = await this.cameraManager.capture();
-                this.client.sendImage(imageBase64);                
+                if (this.connected && this.cameraManager.isInitialized) {
+                    const imageBase64 = await this.cameraManager.capture();
+                    this.client.sendImage(imageBase64);
+                }
             }, this.captureInterval);
 
             console.info('Camera capture started');
@@ -194,7 +196,7 @@ export class GeminiAgent{
      */
     async startScreenShare() {
         if (!this.connected) {
-            throw new Error('Websocket must be connected to start screen sharing');
+            await this.connect();
         }
 
         try {
@@ -202,8 +204,10 @@ export class GeminiAgent{
 
             // Set up interval to capture and send screenshots
             this.screenInterval = setInterval(async () => {
-                const imageBase64 = await this.screenManager.capture();
-                this.client.sendImage(imageBase64);
+                if (this.connected && this.screenManager.isInitialized) {
+                    const imageBase64 = await this.screenManager.capture();
+                    this.client.sendImage(imageBase64);
+                }
             }, this.captureInterval);
 
             console.info('Screen sharing started');
