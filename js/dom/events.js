@@ -36,9 +36,17 @@ const ensureAgentReady = async (agent) => {
 
 /**
  * Sets up event listeners for the application's UI elements
+ * @param {Object} elements - UI elements
+ * @param {Object} settingsManager - Settings manager
  * @param {GeminiAgent} agent - The main application agent instance
+ * @param {Object} themeManager - Theme manager
+ * @param {Function} toggleDarkMode - Dark mode toggle function
+ * @param {Function} updateTextSize - Text size update function
+ * @param {Function} toggleTimestamps - Timestamps toggle function
+ * @param {Function} toggleSpeech - Speech toggle function
+ * @param {Function} replacePowerButtonIcon - Power button icon replacement function
  */
-export function setupEventListeners(agent) {
+export function setupEventListeners(elements, settingsManager, agent, themeManager, toggleDarkMode, updateTextSize, toggleTimestamps, toggleSpeech, replacePowerButtonIcon) {
     // Make sure agent is defined
     if (!agent) {
         console.error('Agent is undefined in setupEventListeners');
