@@ -1,0 +1,380 @@
+8397-632b4cfed12b30b3.js:1 Unrecognized feature: 'ambient-light-sensor'.
+
+8397-632b4cfed12b30b3.js:1 Unrecognized feature: 'battery'.
+8397-632b4cfed12b30b3.js:1 Unrecognized feature: 'execution-while-not-rendered'.
+8397-632b4cfed12b30b3.js:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+8397-632b4cfed12b30b3.js:1 Unrecognized feature: 'layout-animations'.
+8397-632b4cfed12b30b3.js:1 Unrecognized feature: 'legacy-image-formats'.
+8397-632b4cfed12b30b3.js:1 Unrecognized feature: 'navigation-override'.
+8397-632b4cfed12b30b3.js:1 Unrecognized feature: 'oversized-images'.
+8397-632b4cfed12b30b3.js:1 Unrecognized feature: 'publickey-credentials'.
+8397-632b4cfed12b30b3.js:1 Unrecognized feature: 'speaker-selection'.
+8397-632b4cfed12b30b3.js:1 Unrecognized feature: 'unoptimized-images'.
+8397-632b4cfed12b30b3.js:1 Unrecognized feature: 'unsized-media'.
+8397-632b4cfed12b30b3.js:1 Unrecognized feature: 'web-share'.
+8397-632b4cfed12b30b3.js:1 Unrecognized feature: 'pointer-lock'.
+8397-632b4cfed12b30b3.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+8397-632b4cfed12b30b3.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+workspace_iframe.html:32 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_app-1ec7e54a43beaaf4.js:13 XHR finished loading: POST "https://stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=U…d=748392018&_gid=592082732.1743241705&_u=SCKAgEAjQAAAAGgCIAD~&z=1561691029".
+(anonymous)	@	_app-1ec7e54a43beaaf4.js:13
+(anonymous)	@	_app-1ec7e54a43beaaf4.js:13
+(anonymous)	@	_app-1ec7e54a43beaaf4.js:15
+o	@	_app-1ec7e54a43beaaf4.js:15
+wd	@	analytics.js:36
+pe	@	analytics.js:35
+(anonymous)	@	analytics.js:73
+(anonymous)	@	analytics.js:38
+(anonymous)	@	analytics.js:77
+(anonymous)	@	analytics.js:57
+(anonymous)	@	analytics.js:93
+(anonymous)	@	analytics.js:92
+N	@	analytics.js:94
+(anonymous)	@	index.js:351
+(anonymous)	@	index.ts:270
+Promise.then		
+(anonymous)	@	ajs-destination.bund…6b6edc80c65d73.js:1
+(anonymous)	@	index.ts:286
+(anonymous)	@	ajs-destination.bund…6b6edc80c65d73.js:1
+(anonymous)	@	delivery.js:28
+(anonymous)	@	delivery.js:11
+(anonymous)	@	delivery.js:4
+o	@	delivery.js:27
+(anonymous)	@	event-queue.js:325
+(anonymous)	@	event-queue.js:323
+n	@	_app-1ec7e54a43beaaf4.js:13
+setTimeout		
+(anonymous)	@	_app-1ec7e54a43beaaf4.js:13
+(anonymous)	@	event-queue.js:321
+(anonymous)	@	event-queue.js:320
+Promise.then		
+(anonymous)	@	event-queue.js:273
+(anonymous)	@	event-queue.js:181
+Promise.then		
+(anonymous)	@	event-queue.js:169
+(anonymous)	@	event-queue.js:135
+(anonymous)	@	event-queue.js:128
+(anonymous)	@	dispatch.js:25
+h	@	dispatch.js:18
+(anonymous)	@	index.ts:460
+(anonymous)	@	index.ts:454
+(anonymous)	@	index.ts:253
+(anonymous)	@	index.ts:241
+A	@	_app-1ec7e54a43beaaf4.js:15
+U	@	8397-632b4cfed12b30b3.js:1
+refresh	@	8397-632b4cfed12b30b3.js:1
+(anonymous)	@	8397-632b4cfed12b30b3.js:1
+(anonymous)	@	_app-1ec7e54a43beaaf4.js:15
+(anonymous)	@	_app-1ec7e54a43beaaf4.js:15
+onClick	@	_app-1ec7e54a43beaaf4.js:15
+(anonymous)	@	_app-1ec7e54a43beaaf4.js:1
+eB	@	framework-1c6a834886ee4369.js:1
+eH	@	framework-1c6a834886ee4369.js:1
+(anonymous)	@	framework-1c6a834886ee4369.js:1
+re	@	framework-1c6a834886ee4369.js:1
+rt	@	framework-1c6a834886ee4369.js:1
+(anonymous)	@	framework-1c6a834886ee4369.js:1
+uT	@	framework-1c6a834886ee4369.js:1
+eM	@	framework-1c6a834886ee4369.js:1
+ru	@	framework-1c6a834886ee4369.js:1
+tB	@	framework-1c6a834886ee4369.js:1
+tD	@	framework-1c6a834886ee4369.js:1
+n	@	_app-1ec7e54a43beaaf4.js:13
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Unrecognized feature: 'web-share'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+6
+Fetch finished loading: POST "<URL>".
+_app-1ec7e54a43beaaf4.js:13 Fetch finished loading: POST "https://region1.analytics.google.com/g/collect?v=2&tid=G-MPJY3F1YEL&gtm=45j…bview%20Used&_ee=1&ep.event_category=All&ep.value=0&_et=35706&tfd=12191636".
+_app-1ec7e54a43beaaf4.js:13 Fetch finished loading: POST "https://sp.replit.com/v1/t".
+_app-1ec7e54a43beaaf4.js:13 Fetch finished loading: POST "https://logs.browser-intake-us5-datadoghq.com/api/v2/logs?ddsource=browser&…0&dd-evp-origin=browser&dd-request-id=0103939b-f4bc-40b6-929d-5bc643cb48b3".
+_app-1ec7e54a43beaaf4.js:13 Fetch finished loading: POST "https://replit.com/graphql".
+_app-1ec7e54a43beaaf4.js:13 Fetch finished loading: POST "https://replit.com/graphql".
+_app-1ec7e54a43beaaf4.js:13 Fetch finished loading: POST "https://replit.com/graphql".
+Console.js:61 Tool googleSearch registered successfully
+Console.js:61 🔗 Establishing WebSocket connection...
+Console.js:61 🔗 Successfully connected to websocket
+Console.js:61 Setup message with the following configuration was sent: 
+{model: 'models/gemini-2.0-flash-exp', generationConfig: {…}, systemInstruction: {…}, tools: {…}, safetySettings: Array(5)}
+generationConfig
+: 
+responseModalities
+: 
+"text"
+speechConfig
+: 
+voiceConfig
+: 
+prebuiltVoiceConfig
+: 
+voiceName
+: 
+"Aoede"
+[[Prototype]]
+: 
+Object
+constructor
+: 
+ƒ Object()
+hasOwnProperty
+: 
+ƒ hasOwnProperty()
+isPrototypeOf
+: 
+ƒ isPrototypeOf()
+propertyIsEnumerable
+: 
+ƒ propertyIsEnumerable()
+toLocaleString
+: 
+ƒ toLocaleString()
+toString
+: 
+ƒ toString()
+valueOf
+: 
+ƒ valueOf()
+__defineGetter__
+: 
+ƒ __defineGetter__()
+__defineSetter__
+: 
+ƒ __defineSetter__()
+__lookupGetter__
+: 
+ƒ __lookupGetter__()
+__lookupSetter__
+: 
+ƒ __lookupSetter__()
+__proto__
+: 
+(...)
+get __proto__
+: 
+ƒ __proto__()
+set __proto__
+: 
+ƒ __proto__()
+[[Prototype]]
+: 
+Object
+[[Prototype]]
+: 
+Object
+temperature
+: 
+1.8
+top_k
+: 
+65
+top_p
+: 
+0.95
+[[Prototype]]
+: 
+Object
+constructor
+: 
+ƒ Object()
+hasOwnProperty
+: 
+ƒ hasOwnProperty()
+isPrototypeOf
+: 
+ƒ isPrototypeOf()
+propertyIsEnumerable
+: 
+ƒ propertyIsEnumerable()
+toLocaleString
+: 
+ƒ toLocaleString()
+toString
+: 
+ƒ toString()
+valueOf
+: 
+ƒ valueOf()
+__defineGetter__
+: 
+ƒ __defineGetter__()
+__defineSetter__
+: 
+ƒ __defineSetter__()
+__lookupGetter__
+: 
+ƒ __lookupGetter__()
+__lookupSetter__
+: 
+ƒ __lookupSetter__()
+__proto__
+: 
+(...)
+get __proto__
+: 
+ƒ __proto__()
+set __proto__
+: 
+ƒ __proto__()
+model
+: 
+"models/gemini-2.0-flash-exp"
+safetySettings
+: 
+(5) [{…}, {…}, {…}, {…}, {…}]
+systemInstruction
+: 
+{parts: Array(1)}
+tools
+: 
+{functionDeclarations: Array(1)}
+[[Prototype]]
+: 
+Object
+constructor
+: 
+ƒ Object()
+hasOwnProperty
+: 
+ƒ hasOwnProperty()
+isPrototypeOf
+: 
+ƒ isPrototypeOf()
+propertyIsEnumerable
+: 
+ƒ propertyIsEnumerable()
+toLocaleString
+: 
+ƒ toLocaleString()
+toString
+: 
+ƒ toString()
+valueOf
+: 
+ƒ valueOf()
+__defineGetter__
+: 
+ƒ __defineGetter__()
+__defineSetter__
+: 
+ƒ __defineSetter__()
+__lookupGetter__
+: 
+ƒ __lookupGetter__()
+__lookupSetter__
+: 
+ƒ __lookupSetter__()
+__proto__
+: 
+(...)
+get __proto__
+: 
+ƒ __proto__()
+set __proto__
+: 
+ƒ __proto__()
+Console.js:61 GeminiAgent received unmatched message: 
+{setupComplete: {…}}
+setupComplete
+: 
+[[Prototype]]
+: 
+Object
+constructor
+: 
+ƒ Object()
+hasOwnProperty
+: 
+ƒ hasOwnProperty()
+isPrototypeOf
+: 
+ƒ isPrototypeOf()
+propertyIsEnumerable
+: 
+ƒ propertyIsEnumerable()
+toLocaleString
+: 
+ƒ toLocaleString()
+toString
+: 
+ƒ toString()
+valueOf
+: 
+ƒ valueOf()
+__defineGetter__
+: 
+ƒ __defineGetter__()
+__defineSetter__
+: 
+ƒ __defineSetter__()
+__lookupGetter__
+: 
+ƒ __lookupGetter__()
+__lookupSetter__
+: 
+ƒ __lookupSetter__()
+__proto__
+: 
+(...)
+get __proto__
+: 
+ƒ __proto__()
+set __proto__
+: 
+ƒ __proto__()
+[[Prototype]]
+: 
+Object
+constructor
+: 
+ƒ Object()
+hasOwnProperty
+: 
+ƒ hasOwnProperty()
+isPrototypeOf
+: 
+ƒ isPrototypeOf()
+propertyIsEnumerable
+: 
+ƒ propertyIsEnumerable()
+toLocaleString
+: 
+ƒ toLocaleString()
+toString
+: 
+ƒ toString()
+valueOf
+: 
+ƒ valueOf()
+__defineGetter__
+: 
+ƒ __defineGetter__()
+__defineSetter__
+: 
+ƒ __defineSetter__()
+__lookupGetter__
+: 
+ƒ __lookupGetter__()
+__lookupSetter__
+: 
+ƒ __lookupSetter__()
+__proto__
+: 
+(...)
+get __proto__
+: 
+ƒ __proto__()
+set __proto__
+: 
+ƒ __proto__()
