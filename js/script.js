@@ -16,7 +16,9 @@ const deepgramApiKey = getDeepgramApiKey();
 const toolManager = new ToolManager();
 toolManager.registerTool('googleSearch', new GoogleSearchTool());
 
+// Make chatManager globally accessible
 const chatManager = new ChatManager();
+window.chatManager = chatManager;
 
 const geminiAgent = new GeminiAgent({
     url,

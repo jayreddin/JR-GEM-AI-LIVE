@@ -1,9 +1,17 @@
 export class ChatManager {
     constructor() {
         this.chatContainer = document.getElementById('chatHistory');
+        // Ensure chat container is available
+        if (!this.chatContainer) {
+            console.error('Chat container not found, creating a fallback');
+            this.chatContainer = document.createElement('div');
+            this.chatContainer.id = 'chatHistory';
+            this.chatContainer.className = 'chat-history';
+            document.body.appendChild(this.chatContainer);
+        }
         this.currentStreamingMessage = null;
-        this.lastUserMessageType = null; // 'text' or 'audio'
-        this.currentTranscript = ''; // Add this to store accumulated transcript
+        this.lastUserMessageType = null;
+        this.currentTranscript = '';
     }
 
     addUserMessage(text) {

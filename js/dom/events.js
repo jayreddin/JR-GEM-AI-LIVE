@@ -237,21 +237,11 @@ export function setupEventListeners(elements, settingsManager, agent, themeManag
             }
             const text = elements.messageInput.value.trim();
             if (text) {
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('chat-message', 'user-message');
+                // Use the ChatManager to add the user message
+                const chatManager = window.chatManager || (window.chatManager = new ChatManager());
+                chatManager.addUserMessage(text);
 
-                // Add title with timestamp
-                const titleElement = document.createElement('div');
-                titleElement.classList.add('chat-title');
-                titleElement.textContent = `User: You - ${getTimestamp()}`;
-                messageElement.appendChild(titleElement);
-
-                const textElement = document.createElement('div');
-                textElement.textContent = text;
-                messageElement.appendChild(textElement);
-
-                document.getElementById('chatHistory').appendChild(messageElement);
-
+                // Send the text to the agent
                 await agent.sendText(text);
                 elements.messageInput.value = '';
             }
@@ -284,14 +274,14 @@ export function setupEventListeners(elements, settingsManager, agent, themeManag
             }
         });
     }
-    
+
     // Speak button click
     const speakBtn = document.getElementById('speakBtn');
     if (speakBtn) {
         speakBtn.addEventListener('click', () => {
             window.speechEnabled = !window.speechEnabled;
             speakBtn.classList.toggle('active');
-            
+
             // Show status message
             if (window.speechEnabled) {
                 addStatusMessage('Text-to-speech activated');
