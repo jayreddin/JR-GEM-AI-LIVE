@@ -270,4 +270,24 @@ export function setupEventListeners(agent) {
     if (settingsBtn) {
         settingsBtn.addEventListener('click', () => settingsManager.toggleDialog());
     }
+    
+    // Speak button click
+    const speakBtn = document.getElementById('speakBtn');
+    if (speakBtn) {
+        speakBtn.addEventListener('click', () => {
+            window.speechEnabled = !window.speechEnabled;
+            speakBtn.classList.toggle('active');
+            
+            // Show status message
+            if (window.speechEnabled) {
+                addStatusMessage('Text-to-speech activated');
+            } else {
+                addStatusMessage('Text-to-speech deactivated');
+                // Stop any ongoing speech
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                }
+            }
+        });
+    }
 }

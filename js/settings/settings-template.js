@@ -44,6 +44,13 @@ export const settingsTemplate = `
             <span class="slider round"></span>
         </label>
     </div>
+    <div class="settings-group">
+        <label for="speakToggle">Enable Speech</label>
+        <label class="switch">
+            <input type="checkbox" id="speakToggle">
+            <span class="slider round"></span>
+        </label>
+    </div>
 </div>
 
 <div class="tab-content" id="system-tab">

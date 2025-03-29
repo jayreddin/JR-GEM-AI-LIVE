@@ -62,6 +62,7 @@ class SettingsManager {
             textSizeInput: this.dialog.querySelector('#textSize'),
             textSizeValue: this.dialog.querySelector('#textSizeValue'),
             timestampToggle: this.dialog.querySelector('#timestampToggle'),
+            speakToggle: this.dialog.querySelector('#speakToggle'),
 
             // Other UI elements
             dialog: this.dialog,
@@ -115,7 +116,7 @@ class SettingsManager {
         const inputElements = [
             'sampleRateInput', 'temperatureInput', 'topPInput', 'topKInput',
             'fpsInput', 'resizeWidthInput', 'qualityInput', 'harassmentInput',
-            'dangerousInput', 'sexualInput', 'civicInput', 'textSizeInput'
+            'dangerousInput', 'sexualInput', 'civicInput'
         ];
 
         inputElements.forEach(elementName => {
@@ -123,6 +124,14 @@ class SettingsManager {
                 this.elements[elementName].addEventListener('input', () => this.updateDisplayValues());
             }
         });
+        
+        // Special handling for text size to update in real-time
+        if (this.elements.textSizeInput) {
+            this.elements.textSizeInput.addEventListener('input', () => {
+                this.updateDisplayValues();
+                this.applyTextSize();
+            });
+        }
     }
 
     switchTab(tabId) {
@@ -170,8 +179,20 @@ class SettingsManager {
         if (this.elements.dangerousInput) this.elements.dangerousInput.value = localStorage.getItem('dangerousContentThreshold') || '3';
         if (this.elements.sexualInput) this.elements.sexualInput.value = localStorage.getItem('sexuallyExplicitThreshold') || '3';
         if (this.elements.civicInput) this.elements.civicInput.value = localStorage.getItem('civicIntegrityThreshold') || '3';
+        
+        // Load speak toggle
+        const speakToggle = this.dialog.querySelector('#speakToggle');
+        if (speakToggle) {
+            speakToggle.checked = localStorage.getItem('speakEnabled') === 'true';
+        }
 
         this.updateDisplayValues();
+        this.applyTextSize(); // Apply text size immediately
+    }
+    
+    applyTextSize() {
+        const size = this.elements.textSizeInput ? this.elements.textSizeInput.value : '16';
+        document.documentElement.style.setProperty('--text-size', `${size}px`);
     }
 
     saveSettings() { //from original code
@@ -197,6 +218,27 @@ class SettingsManager {
         if (this.elements.dangerousInput) localStorage.setItem('dangerousContentThreshold', this.elements.dangerousInput.value);
         if (this.elements.sexualInput) localStorage.setItem('sexuallyExplicitThreshold', this.elements.sexualInput.value);
         if (this.elements.civicInput) localStorage.setItem('civicIntegrityThreshold', this.elements.civicInput.value);
+        
+        // Save speak setting
+        const speakToggle = this.dialog.querySelector('#speakToggle');
+        if (speakToggle) {
+            localStorage.setItem('speakEnabled', speakToggle.checked);
+            window.speechEnabled = speakToggle.checked;
+            
+            // Update speak button state
+            const speakBtn = document.getElementById('speakBtn');
+            if (speakBtn) {
+                if (window.speechEnabled) {
+                    speakBtn.classList.add('active');
+                } else {
+                    speakBtn.classList.remove('active');
+                    // Stop any ongoing speech
+                    if ('speechSynthesis' in window) {
+                        window.speechSynthesis.cancel();
+                    }
+                }
+            }
+        }
     }
 
     updateDisplayValues() { //from original code
