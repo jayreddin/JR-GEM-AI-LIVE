@@ -1,0 +1,54 @@
+8397-632b4cfed12b30b3.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+(anonymous)	@	8397-632b4cfed12b30b3.js:1
+(anonymous)	@	main-ed98b1b4a9a9de99.js:1
+(anonymous)	@	main-ed98b1b4a9a9de99.js:1
+n	@	main-ed98b1b4a9a9de99.js:1
+u	@	main-ed98b1b4a9a9de99.js:1
+(anonymous)	@	main-ed98b1b4a9a9de99.js:1
+(anonymous)	@	main-ed98b1b4a9a9de99.js:1
+(anonymous)	@	8397-632b4cfed12b30b3.js:1
+(anonymous)	@	8397-632b4cfed12b30b3.js:1
+(anonymous)	@	main-ed98b1b4a9a9de99.js:1
+(anonymous)	@	main-ed98b1b4a9a9de99.js:1
+n	@	main-ed98b1b4a9a9de99.js:1
+u	@	main-ed98b1b4a9a9de99.js:1
+(anonymous)	@	main-ed98b1b4a9a9de99.js:1
+(anonymous)	@	main-ed98b1b4a9a9de99.js:1
+(anonymous)	@	8397-632b4cfed12b30b3.js:1
+navigateTo	@	8397-632b4cfed12b30b3.js:1
+refresh	@	8397-632b4cfed12b30b3.js:1
+(anonymous)	@	8397-632b4cfed12b30b3.js:1
+(anonymous)	@	_app-1ec7e54a43beaaf4.js:15
+(anonymous)	@	_app-1ec7e54a43beaaf4.js:15
+onClick	@	_app-1ec7e54a43beaaf4.js:15
+(anonymous)	@	_app-1ec7e54a43beaaf4.js:1
+eB	@	framework-1c6a834886ee4369.js:1
+eH	@	framework-1c6a834886ee4369.js:1
+(anonymous)	@	framework-1c6a834886ee4369.js:1
+re	@	framework-1c6a834886ee4369.js:1
+rt	@	framework-1c6a834886ee4369.js:1
+(anonymous)	@	framework-1c6a834886ee4369.js:1
+uT	@	framework-1c6a834886ee4369.js:1
+eM	@	framework-1c6a834886ee4369.js:1
+ru	@	framework-1c6a834886ee4369.js:1
+tB	@	framework-1c6a834886ee4369.js:1
+tD	@	framework-1c6a834886ee4369.js:1
+n	@	_app-1ec7e54a43beaaf4.js:13
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Unrecognized feature: 'web-share'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+
+﻿
+
