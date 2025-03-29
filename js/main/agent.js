@@ -431,30 +431,6 @@ export class GeminiAgent{
             return;
         }
         await this.audioRecorder.toggleMic();
-    }
-
-    async toggleCamera() {
-        try {
-            if (this.cameraInterval) {
-                await this.stopCameraCapture();
-            } else {
-                await this.startCameraCapture();
-            }
-        } catch (error) {
-            throw new Error('Camera toggle error: ' + error);
-        }
-    }
-
-    async toggleScreenShare() {
-        try {
-            if (this.screenInterval) {
-                await this.stopScreenShare();
-            } else {
-                await this.startScreenShare();
-            }
-        } catch (error) {
-            throw new Error('Screen share toggle error: ' + error);
-        }
     }           
 
     // Add event emitter functionality

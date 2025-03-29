@@ -92,16 +92,13 @@ body {
 
 .control-bar {
     position: absolute;
-    bottom: 90px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 80px;
+    left: 20px;
+    right: 20px;
     display: flex;
     justify-content: center;
     gap: 20px;
     z-index: 2;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 10px 20px;
-    border-radius: 20px;
 }
 
 .camera-btn,
@@ -304,28 +301,16 @@ body {
     justify-content: center;
 }
 
-.header-buttons {
-    position: fixed;
+.power-btn, .new-chat-btn {
+    position: absolute;
     top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 20px;
-    z-index: 10;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 10px;
-    border-radius: 20px;
-}
-
-.power-btn, .new-chat-btn, .settings-btn {
     padding: 10px;
     background: linear-gradient(to bottom, #4CAF50, #2E7D32);
     color: white;
     border: none;
     border-radius: 50%;
     cursor: pointer;
+    z-index: 10;
     width: 40px;
     height: 40px;
     display: flex;
@@ -335,6 +320,10 @@ body {
 
 .power-btn.connected {
     background-color: var(--accent-color);
+}
+
+.new-chat-btn {
+    left: 80px;
 }
 
 
@@ -575,13 +564,13 @@ input:checked + .slider:before {
 
 .chat-history {
     position: absolute;
-    top: 70px;
+    top: 60px;
     left: 20px;
     right: 20px;
-    bottom: 140px;
+    bottom: 120px;
     background: var(--chat-bg);
     border-radius: 10px;
-    padding: 20px;
+    padding: 15px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;

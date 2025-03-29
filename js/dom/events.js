@@ -25,12 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     await ensureAgentReady(agent);
                     const text = elements.messageInput.value.trim();
                     if (text) {
+                        // Use the ChatManager to add the user message
                         const chatManager = window.chatManager;
                         if (!chatManager) {
                             console.error('ChatManager not initialized');
                             return;
                         }
 
+                        // Add message to chat and send to agent
                         chatManager.addUserMessage(text);
                         await agent.sendText(text);
                         elements.messageInput.value = '';
@@ -71,10 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Helper functions
         async function ensureAgentReady(agent) {
-            if (!agent.connected) {
-                await agent.connect();
-                showDisconnectButton();
-            }
             if (!agent.initialized) {
                 await agent.initialize();
             }

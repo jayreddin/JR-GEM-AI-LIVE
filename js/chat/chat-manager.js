@@ -95,7 +95,7 @@ export class ChatManager {
         }
         return null;
     }
-
+    
     toggleTimestamps() {
         const currentSetting = localStorage.getItem('showTimestamps') === 'true';
         localStorage.setItem('showTimestamps', !currentSetting);
@@ -109,6 +109,9 @@ export class ChatManager {
         const contentDiv = this.currentStreamingMessage.querySelector('.chat-content');
         if (contentDiv) {
             this.currentTranscript += text;
+            contentDiv.textContent = this.currentTranscript;
+        }
+        if (contentDiv) {
             contentDiv.textContent = this.currentTranscript;
         }
 
