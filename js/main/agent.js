@@ -35,7 +35,7 @@ export class GeminiAgent{
         this.audioContext = null;
         this.audioRecorder = null;
         this.audioStreamer = null;
-        
+
         // For transcribers
         this.transcribeModelsSpeech = transcribeModelsSpeech;
         this.transcribeUsersSpeech = transcribeUsersSpeech;
@@ -47,7 +47,7 @@ export class GeminiAgent{
         this.captureInterval = 1000 / this.fps;
         this.resizeWidth = localStorage.getItem('resizeWidth') || '640';
         this.quality = localStorage.getItem('quality') || '0.4';
-        
+
         // Initialize camera
         this.cameraManager = new CameraManager({
             width: this.resizeWidth,
@@ -71,7 +71,7 @@ export class GeminiAgent{
             }
         });
         this.screenInterval = null;
-        
+
         // Add function declarations to config
         this.toolManager = toolManager;
         config.tools.functionDeclarations = toolManager.getToolDeclarations() || [];
@@ -122,7 +122,7 @@ export class GeminiAgent{
             await this.handleToolCall(toolCall);
         });
     }
-        
+
     // TODO: Handle multiple function calls
     async handleToolCall(toolCall) {
         const functionCall = toolCall.functionCalls[0];
@@ -154,21 +154,21 @@ export class GeminiAgent{
      */
     async startCameraCapture() {
         if (!this.connected) {
-            throw new Error('Must be connected to start camera capture');
+            throw new Error('Websocket must be connected to start camera capture');
         }
 
         try {
             await this.cameraManager.initialize();
-            
+
             // Set up interval to capture and send images
             this.cameraInterval = setInterval(async () => {
                 const imageBase64 = await this.cameraManager.capture();
                 this.client.sendImage(imageBase64);                
             }, this.captureInterval);
-            
+
             console.info('Camera capture started');
         } catch (error) {
-            await this.disconnect();
+            await this.stopCameraCapture(); // Only stop camera, don't disconnect entirely
             throw new Error('Failed to start camera capture: ' + error);
         }
     }
@@ -181,11 +181,11 @@ export class GeminiAgent{
             clearInterval(this.cameraInterval);
             this.cameraInterval = null;
         }
-        
+
         if (this.cameraManager) {
             this.cameraManager.dispose();
         }
-        
+
         console.info('Camera capture stopped');
     }
 
@@ -199,13 +199,13 @@ export class GeminiAgent{
 
         try {
             await this.screenManager.initialize();
-            
+
             // Set up interval to capture and send screenshots
             this.screenInterval = setInterval(async () => {
                 const imageBase64 = await this.screenManager.capture();
                 this.client.sendImage(imageBase64);
             }, this.captureInterval);
-            
+
             console.info('Screen sharing started');
         } catch (error) {
             await this.stopScreenShare();
@@ -221,11 +221,11 @@ export class GeminiAgent{
             clearInterval(this.screenInterval);
             this.screenInterval = null;
         }
-        
+
         if (this.screenManager) {
             this.screenManager.dispose();
         }
-        
+
         console.info('Screen sharing stopped');
     }
 
@@ -306,7 +306,7 @@ export class GeminiAgent{
             this.client = null;
             this.initialized = false;
             this.connected = false;
-            
+
             console.info('Disconnected and cleaned up all resources');
         } catch (error) {
             throw new Error('Disconnect error:' + error);
@@ -399,7 +399,7 @@ export class GeminiAgent{
             this.audioStreamer.gainNode.connect(this.visualizer.analyser);
             this.visualizer.start();
             this.audioRecorder = new AudioRecorder();
-            
+
             // Initialize transcriber if API key is provided
             if (this.deepgramApiKey) {
                 if (this.transcribeModelsSpeech) {
@@ -413,7 +413,7 @@ export class GeminiAgent{
             } else {
                 console.warn('No Deepgram API key provided, transcription disabled');
             }
-            
+
             this.initialized = true;
             console.info(`${this.client.name} initialized successfully`);
             this.client.sendText('.');  // Trigger the model to start speaking first

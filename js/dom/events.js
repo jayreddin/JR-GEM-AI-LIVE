@@ -101,8 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.cameraBtn.addEventListener('click', async () => {
                 try {
                     await ensureAgentReady(agent);
-                    elements.cameraBtn.classList.toggle('active');
                     await agent.toggleCamera();
+                    elements.cameraBtn.classList.toggle('active');
                     addStatusMessage(elements.cameraBtn.classList.contains('active') ? 'Camera activated' : 'Camera deactivated');
                 } catch (error) {
                     console.error('Camera error:', error);
@@ -117,13 +117,17 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.screenBtn.addEventListener('click', async () => {
                 try {
                     await ensureAgentReady(agent);
-                    elements.screenBtn.classList.toggle('active');
                     await agent.toggleScreenShare();
+                    elements.screenBtn.classList.toggle('active');
                     addStatusMessage(elements.screenBtn.classList.contains('active') ? 'Screen sharing activated' : 'Screen sharing deactivated');
                 } catch (error) {
                     console.error('Screen sharing error:', error);
                     addStatusMessage('Screen sharing access error');
                     elements.screenBtn.classList.remove('active');
+                    // Try to clean up any hanging resources
+                    if (agent.screenInterval) {
+                        await agent.stopScreenShare();
+                    }
                 }
             });
         }

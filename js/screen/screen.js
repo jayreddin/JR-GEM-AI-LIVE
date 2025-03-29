@@ -14,7 +14,7 @@ export class ScreenManager {
             quality: config.quality || 0.8,
             onStop: config.onStop
         };
-        
+
         this.stream = null;
         this.videoElement = null;
         this.canvas = null;
@@ -139,28 +139,35 @@ export class ScreenManager {
     }
 
     /**
-     * Stop screen capture and cleanup resources
+     * Clean up resources
      */
     dispose() {
-        if (this.stream) {
-            this.stream.getTracks().forEach(track => track.stop());
-            this.stream = null;
-        }
-        
-        if (this.videoElement) {
-            this.videoElement.srcObject = null;
-            this.videoElement = null;
-        }
+        try {
+            if (this.stream) {
+                this.stream.getTracks().forEach(track => track.stop());
+                this.stream = null;
+            }
 
-        if (this.previewContainer) {
-            this.hidePreview();
-            this.previewContainer.innerHTML = ''; // Clear the preview container
-            this.previewContainer = null;
-        }
+            if (this.videoElement) {
+                this.videoElement.srcObject = null;
+                if (this.videoElement.parentNode) {
+                    this.videoElement.parentNode.removeChild(this.videoElement);
+                }
+                this.videoElement = null;
+            }
 
-        this.canvas = null;
-        this.ctx = null;
-        this.isInitialized = false;
-        this.aspectRatio = null;
+            this.canvas = null;
+            this.ctx = null;
+            this.isInitialized = false;
+
+            if (this.previewContainer) {
+                this.previewContainer.innerHTML = ''; // Clear any remaining elements
+                this.hidePreview();
+            }
+
+            console.info('Screen manager resources cleaned up');
+        } catch (error) {
+            console.error('Error during screen manager cleanup:', error);
+        }
     }
 }
