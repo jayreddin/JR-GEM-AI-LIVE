@@ -1,4 +1,17 @@
 import elements from './elements.js';
+
+// Log available DOM elements for debugging
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, checking critical elements:');
+    const sendBtn = document.getElementById('sendBtn');
+    const messageInput = document.getElementById('messageInput');
+    const chatHistory = document.getElementById('chatHistory');
+    
+    console.log('Send button exists:', !!sendBtn);
+    console.log('Message input exists:', !!messageInput);
+    console.log('Chat history exists:', !!chatHistory);
+});
+
 import settingsManager from '../settings/settings-manager.js';
 
 /**
@@ -47,6 +60,34 @@ const ensureAgentReady = async (agent) => {
  * @param {Function} replacePowerButtonIcon - Power button icon replacement function
  */
 export function setupEventListeners(elements, settingsManager, agent, themeManager, toggleDarkMode, updateTextSize, toggleTimestamps, toggleSpeech, replacePowerButtonIcon) {
+    // Make sure we have access to chatManager
+    const chatManager = window.chatManager;
+    if (!chatManager) {
+        console.error('Chat manager not found in global scope');
+    }
+    
+    // Add status message function
+    function addStatusMessage(message) {
+        const statusDiv = document.createElement('div');
+        statusDiv.className = 'status-message';
+        statusDiv.textContent = message;
+        document.getElementById('chatHistory').appendChild(statusDiv);
+        setTimeout(() => {
+            statusDiv.remove();
+        }, 3000);
+    }
+    
+    // Implement send message
+    const sendMessage = async () => {
+        try {
+            const messageInput = document.getElementById('messageInput');
+            if (!messageInput) {
+                console.error('Message input not found');
+                return;
+            }
+            
+            const text = messageInput.value.trim();
+            if (text) {
     // Make sure agent is defined
     if (!agent) {
         console.error('Agent is undefined in setupEventListeners');
@@ -242,17 +283,26 @@ export function setupEventListeners(elements, settingsManager, agent, themeManag
                 chatManager.addUserMessage(text);
 
                 // Send the text to the agent
+                chatManager.addUserMessage(text);
                 await agent.sendText(text);
                 elements.messageInput.value = '';
                 console.log('Message sent:', text);
             }
         } catch (error) {
             console.error('Error sending message:', error);
+            addStatusMessage('Failed to send message');
         }
     };
 
-    if (elements.sendBtn) {
-        elements.sendBtn.addEventListener('click', sendMessage);
+    // Make sure we properly connect the send button
+    const sendBtn = document.getElementById('sendBtn');
+    if (sendBtn) {
+        sendBtn.addEventListener('click', () => {
+            sendMessage();
+        });
+        console.log('Send button listener attached');
+    } else {
+        console.error('Send button not found in the DOM');
     }
 
     if (elements.messageInput) {
@@ -262,6 +312,7 @@ export function setupEventListeners(elements, settingsManager, agent, themeManag
                 sendMessage();
             }
         });
+        console.log('Message input listener attached');
     }
 
     // Settings button click
