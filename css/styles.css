@@ -127,7 +127,7 @@ body {
     position: absolute;
     bottom: 20px;
     left: 20px;
-    right: 100px; /* Leave space for mic button */
+    right: 20px; /* Use full width */
     display: flex;
     gap: 10px;
     z-index: 2;
@@ -278,6 +278,46 @@ body {
     background-color: var(--button-hover);
 }
 
+.power-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: var(--button-bg);
+    border: 1px solid var(--accent-color);
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.power-btn.connected {
+    background-color: var(--accent-color);
+}
+
+.new-chat-btn {
+    position: absolute;
+    top: 20px;
+    left: 80px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: var(--button-bg);
+    border: 1px solid var(--accent-color);
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
 .settings-dialog {
     display: none;
     position: fixed;
@@ -289,10 +329,106 @@ body {
     border-radius: 12px;
     padding: 20px;
     width: 90%;
-    max-width: 500px;
+    max-width: 600px;
     max-height: 80vh;
     overflow-y: auto;
     z-index: 1001;
+}
+
+.settings-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--accent-color);
+    padding-bottom: 10px;
+}
+
+.settings-tab {
+    padding: 8px 12px;
+    background-color: var(--button-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 5px 5px 0 0;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.settings-tab.active {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.dark-light-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 24px;
+    transition: .4s;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .4s;
+}
+
+input:checked + .toggle-slider {
+    background-color: var(--accent-color);
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(26px);
+}
+
+.settings-save-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    position: sticky;
+    bottom: 0;
 }
 
 .settings-dialog.active {
@@ -389,6 +525,13 @@ body {
     max-width: 80%;
     word-wrap: break-word;
     line-height: 1.4;
+    border: 1px solid var(--accent-color);
+}
+
+.chat-title {
+    font-size: 0.8em;
+    opacity: 0.8;
+    margin-bottom: 5px;
 }
 
 .user-message {

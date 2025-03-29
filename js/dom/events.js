@@ -131,6 +131,52 @@ export function setupEventListeners(agent) {
         console.info('Screen share stopped');
     });
 
+    // Power button functionality
+    const powerBtn = document.getElementById('powerBtn');
+    const newChatBtn = document.getElementById('newChatBtn');
+    
+    let isConnected = true;
+    
+    powerBtn.addEventListener('click', async () => {
+        if (isConnected) {
+            try {
+                await agent.disconnect();
+                powerBtn.classList.remove('connected');
+                isConnected = false;
+                addStatusMessage(`Disconnected - ${getTimestamp()}`);
+            } catch (error) {
+                console.error('Error disconnecting:', error);
+            }
+        } else {
+            try {
+                await agent.connect();
+                powerBtn.classList.add('connected');
+                isConnected = true;
+                addStatusMessage(`Connected - ${getTimestamp()}`);
+            } catch (error) {
+                console.error('Error connecting:', error);
+            }
+        }
+    });
+    
+    // New chat button functionality
+    newChatBtn.addEventListener('click', () => {
+        // Clear chat history
+        document.getElementById('chatHistory').innerHTML = '';
+        // Reset any active streams
+        if (isCameraActive) {
+            elements.cameraBtn.click();
+        }
+        if (isScreenShareActive) {
+            elements.screenBtn.click();
+        }
+        if (isMicActive) {
+            elements.micBtn.click();
+        }
+        // Add a status message
+        addStatusMessage(`New chat started - ${getTimestamp()}`);
+    });
+
     elements.screenBtn.addEventListener('click', async () => {
         try {
             await ensureAgentReady(agent);
@@ -157,8 +203,25 @@ export function setupEventListeners(agent) {
         try {
             await ensureAgentReady(agent);
             const text = elements.messageInput.value.trim();
-            await agent.sendText(text);
-            elements.messageInput.value = '';
+            if (text) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('chat-message', 'user-message');
+                
+                // Add title with timestamp
+                const titleElement = document.createElement('div');
+                titleElement.classList.add('chat-title');
+                titleElement.textContent = `User: You - ${getTimestamp()}`;
+                messageElement.appendChild(titleElement);
+                
+                const textElement = document.createElement('div');
+                textElement.textContent = text;
+                messageElement.appendChild(textElement);
+                
+                document.getElementById('chatHistory').appendChild(messageElement);
+                
+                await agent.sendText(text);
+                elements.messageInput.value = '';
+            }
         } catch (error) {
             console.error('Error sending message:', error);
         }
