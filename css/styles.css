@@ -69,6 +69,19 @@ body {
     color: var(--text-color);
 }
 
+.control-bar {
+    position: absolute;
+    bottom: 80px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    z-index: 2;
+}
+
+.camera-btn,
+.screen-btn,
 .mic-btn {
     width: 45px;
     height: 45px;
@@ -82,70 +95,28 @@ body {
     align-items: center;
     transition: all 0.3s ease;
     z-index: 2;
-    position: absolute;
-    bottom: 22px;
-    right: 25px;
-}
-
-.camera-btn,
-.screen-btn {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    background-color: var(--button-bg);
-    border: 2px solid var(--accent-color);
-    color: var(--text-color);
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.3s ease;
-    z-index: 2;
-    position: absolute;
-    right: 25px;
-}
-
-.camera-btn {
-    bottom: 142px;
-}
-
-.screen-btn {
-    bottom: 82px;
 }
 
 .camera-btn:hover,
-.screen-btn:hover {
-    background-color: var(--button-hover);
-    transform: scale(1.05);
-}
-
-.camera-btn.active,
-.screen-btn.active {
-    background-color: var(--accent-color);
-}
-
-/* Media query for small devices */
-@media screen and (max-width: 350px) {
-    .mic-btn {
-        bottom: 80px;
-    }
-    
-    .camera-btn {
-        bottom: 200px;
-    }
-    
-    .screen-btn {
-        bottom: 140px;
-    }
-}
-
+.screen-btn:hover,
 .mic-btn:hover {
     background-color: var(--button-hover);
     transform: scale(1.05);
 }
 
+.camera-btn.active,
+.screen-btn.active,
 .mic-btn.active {
-    background-color: var(--accent-color);
+    background-color: #ff4444;
+    border-color: #ff4444;
+    box-shadow: 0 0 10px rgba(255, 68, 68, 0.7);
+}
+
+/* Media query for small devices */
+@media screen and (max-width: 350px) {
+    .control-bar {
+        gap: 10px;
+    }
 }
 
 .mic-icon {

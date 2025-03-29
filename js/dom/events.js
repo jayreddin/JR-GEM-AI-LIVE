@@ -61,16 +61,42 @@ export function setupEventListeners(agent) {
     });
 
     // Microphone toggle handler
+    let isMicActive = false;
     elements.micBtn.addEventListener('click', async () => {
         try {
             await ensureAgentReady(agent);
             await agent.toggleMic();
-            elements.micBtn.classList.toggle('active');
+            
+            isMicActive = !isMicActive;
+            
+            if (isMicActive) {
+                elements.micBtn.classList.add('active');
+                addStatusMessage(`Microphone: Active - ${getTimestamp()}`);
+            } else {
+                elements.micBtn.classList.remove('active');
+                addStatusMessage(`Microphone: Deactivated - ${getTimestamp()}`);
+            }
         } catch (error) {
             console.error('Error toggling microphone:', error);
             elements.micBtn.classList.remove('active');
+            isMicActive = false;
         }
     });
+
+    // Function to add status message to chat
+    const addStatusMessage = (message) => {
+        const statusElement = document.createElement('div');
+        statusElement.className = 'status-message';
+        statusElement.textContent = message;
+        document.getElementById('chatHistory').appendChild(statusElement);
+        document.getElementById('chatHistory').scrollTop = document.getElementById('chatHistory').scrollHeight;
+    };
+    
+    // Function to get current timestamp
+    const getTimestamp = () => {
+        const now = new Date();
+        return now.toLocaleTimeString();
+    };
 
     // Camera toggle handler
     elements.cameraBtn.addEventListener('click', async () => {
@@ -80,9 +106,11 @@ export function setupEventListeners(agent) {
             if (!isCameraActive) {
                 await agent.startCameraCapture();
                 elements.cameraBtn.classList.add('active');
+                addStatusMessage(`Live Camera: Active - ${getTimestamp()}`);
             } else {
                 await agent.stopCameraCapture();
                 elements.cameraBtn.classList.remove('active');
+                addStatusMessage(`Live Camera: Deactivated - ${getTimestamp()}`);
             }
             isCameraActive = !isCameraActive;
         } catch (error) {
@@ -99,6 +127,7 @@ export function setupEventListeners(agent) {
     agent.on('screenshare_stopped', () => {
         elements.screenBtn.classList.remove('active');
         isScreenShareActive = false;
+        addStatusMessage(`Live Screen Share: Deactivated - ${getTimestamp()}`);
         console.info('Screen share stopped');
     });
 
@@ -109,9 +138,11 @@ export function setupEventListeners(agent) {
             if (!isScreenShareActive) {
                 await agent.startScreenShare();
                 elements.screenBtn.classList.add('active');
+                addStatusMessage(`Live Screen Share: Active - ${getTimestamp()}`);
             } else {
                 await agent.stopScreenShare();
                 elements.screenBtn.classList.remove('active');
+                addStatusMessage(`Live Screen Share: Deactivated - ${getTimestamp()}`);
             }
             isScreenShareActive = !isScreenShareActive;
         } catch (error) {
