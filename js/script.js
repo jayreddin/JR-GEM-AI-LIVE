@@ -20,6 +20,7 @@ toolManager.registerTool('googleSearch', new GoogleSearchTool());
 const chatManager = new ChatManager();
 window.chatManager = chatManager;
 
+// Create and expose agent globally
 const geminiAgent = new GeminiAgent({
     url,
     config,
@@ -27,6 +28,7 @@ const geminiAgent = new GeminiAgent({
     modelSampleRate: MODEL_SAMPLE_RATE,
     toolManager
 });
+window.agent = geminiAgent;
 
 // Handle chat-related events
 geminiAgent.on('transcription', (transcript) => {
