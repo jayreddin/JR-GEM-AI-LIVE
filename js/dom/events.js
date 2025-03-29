@@ -276,7 +276,13 @@ export function setupEventListeners(elements, settingsManager, agent, themeManag
     // Settings button click
     const settingsBtn = document.getElementById('settingsBtn');
     if (settingsBtn) {
-        settingsBtn.addEventListener('click', () => settingsManager.toggleDialog());
+        settingsBtn.addEventListener('click', () => {
+            if (settingsManager && typeof settingsManager.toggleDialog === 'function') {
+                settingsManager.toggleDialog();
+            } else {
+                console.error('settingsManager.toggleDialog is not a function');
+            }
+        });
     }
     
     // Speak button click

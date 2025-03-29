@@ -109,8 +109,7 @@ const elements = {
     speakBtn: document.getElementById('speakBtn'),
     powerButton: document.getElementById('powerButton')
 };
-const settingsManager = { // Placeholder
-    //Add settings manager functions here.
-};
+// Import the settings manager instance
+import settingsManager from './settings/settings-manager.js';
 
 setupEventListeners(elements, settingsManager, geminiAgent, themeManager, toggleDarkMode, updateTextSize, toggleTimestamps, toggleSpeech, replacePowerButtonIcon);
