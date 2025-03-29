@@ -39,6 +39,11 @@ const ensureAgentReady = async (agent) => {
  * @param {GeminiAgent} agent - The main application agent instance
  */
 export function setupEventListeners(agent) {
+    // Make sure agent is defined
+    if (!agent) {
+        console.error('Agent is undefined in setupEventListeners');
+        return;
+    }
     // Disconnect handler
     elements.disconnectBtn.addEventListener('click', async () => {
         try {
@@ -202,6 +207,10 @@ export function setupEventListeners(agent) {
     const sendMessage = async () => {
         try {
             await ensureAgentReady(agent);
+            if (!elements.messageInput) {
+                console.error('Message input element not found');
+                return;
+            }
             const text = elements.messageInput.value.trim();
             if (text) {
                 const messageElement = document.createElement('div');
@@ -227,13 +236,18 @@ export function setupEventListeners(agent) {
         }
     };
 
-    elements.sendBtn.addEventListener('click', sendMessage);
-    elements.messageInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            sendMessage();
-        }
-    });
+    if (elements.sendBtn) {
+        elements.sendBtn.addEventListener('click', sendMessage);
+    }
+    
+    if (elements.messageInput) {
+        elements.messageInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+    }
 
     // Settings button click
     if (elements.settingsBtn) {
