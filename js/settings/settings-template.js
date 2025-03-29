@@ -24,56 +24,56 @@ export const settingsTemplate = `
 
 <div class="tab-content" id="ui-tab">
     <div class="settings-group">
-        <label>Theme</label>
-        <div class="dark-light-toggle">
-            <span>Dark</span>
-            <label class="toggle-switch">
-                <input type="checkbox" id="themeToggle">
-                <span class="toggle-slider"></span>
-            </label>
-            <span>Light</span>
-        </div>
+        <label for="themeToggle">Dark Mode</label>
+        <label class="switch">
+            <input type="checkbox" id="themeToggle">
+            <span class="slider round"></span>
+        </label>
     </div>
     <div class="settings-group">
         <label for="textSize">Text Size</label>
-        <input type="range" id="textSize" min="12" max="24" step="1">
-        <span id="textSizeValue">16px</span>
+        <div class="slider-container">
+            <input type="range" min="12" max="24" value="16" id="textSize">
+            <span id="textSizeValue">16px</span>
+        </div>
     </div>
     <div class="settings-group">
-        <label>Show Timestamps</label>
-        <div class="dark-light-toggle">
-            <span>Off</span>
-            <label class="toggle-switch">
-                <input type="checkbox" id="timestampToggle" checked>
-                <span class="toggle-slider"></span>
-            </label>
-            <span>On</span>
-        </div>
+        <label for="timestampToggle">Show Timestamps</label>
+        <label class="switch">
+            <input type="checkbox" id="timestampToggle">
+            <span class="slider round"></span>
+        </label>
     </div>
 </div>
 
 <div class="tab-content" id="system-tab">
     <div class="settings-group">
         <label for="systemInstructions">System Instructions</label>
-        <textarea id="systemInstructions" rows="6" placeholder="Enter system instructions">You are a helpful assistant</textarea>
+        <textarea id="systemInstructions" rows="8" placeholder="Enter system instructions">You are a helpful assistant</textarea>
     </div>
 </div>
 
 <div class="tab-content" id="media-tab">
     <div class="settings-group">
         <label for="fps">FPS (1-10)</label>
-        <input type="range" id="fps" min="1" max="10" step="1">
-        <span id="fpsValue">1 FPS</span>
+        <div class="slider-container">
+            <input type="range" min="1" max="10" value="1" id="fps">
+            <span id="fpsValue">1 FPS</span>
+        </div>
     </div>
     <div class="settings-group">
         <label for="resizeWidth">Resize Width (640-1920)</label>
-        <input type="range" id="resizeWidth" min="640" max="1920" step="80">
-        <span id="resizeWidthValue">640px</span>
+        <div class="slider-container">
+            <input type="range" min="640" max="1920" value="640" id="resizeWidth">
+            <span id="resizeWidthValue">640px</span>
+        </div>
     </div>
     <div class="settings-group">
         <label for="quality">Quality (0.1-1)</label>
-        <input type="range" id="quality" min="0.1" max="1" step="0.1">
-        <span id="qualityValue">0.3</span>
+        <div class="slider-container">
+            <input type="range" min="0.1" max="1" step="0.1" value="0.3" id="quality">
+            <span id="qualityValue">0.3</span>
+        </div>
     </div>
     <div class="settings-group">
         <label for="voice">Voice</label>
@@ -87,64 +87,72 @@ export const settingsTemplate = `
     </div>
     <div class="settings-group">
         <label for="sampleRate">Sample Rate</label>
-        <input type="range" id="sampleRate" min="8000" max="48000" step="1000">
-        <span id="sampleRateValue">27000 Hz</span>
+        <div class="slider-container">
+            <input type="range" min="16000" max="48000" step="1000" value="27000" id="sampleRate">
+            <span id="sampleRateValue">27000 Hz</span>
+        </div>
     </div>
 </div>
 
 <div class="tab-content" id="advanced-tab">
     <div class="settings-group">
         <label for="temperature">Temperature (0-2)</label>
-        <input type="range" id="temperature" min="0" max="2" step="0.1">
-        <span id="temperatureValue">1.8</span>
+        <div class="slider-container">
+            <input type="range" min="0" max="2" step="0.1" value="1.8" id="temperature">
+            <span id="temperatureValue">1.8</span>
+        </div>
     </div>
     <div class="settings-group">
         <label for="topP">Top P (0-1)</label>
-        <input type="range" id="topP" min="0" max="1" step="0.05">
-        <span id="topPValue">0.95</span>
+        <div class="slider-container">
+            <input type="range" min="0" max="1" step="0.05" value="0.95" id="topP">
+            <span id="topPValue">0.95</span>
+        </div>
     </div>
     <div class="settings-group">
         <label for="topK">Top K (1-100)</label>
-        <input type="range" id="topK" min="1" max="100" step="1">
-        <span id="topKValue">65</span>
+        <div class="slider-container">
+            <input type="range" min="1" max="100" value="65" id="topK">
+            <span id="topKValue">65</span>
+        </div>
     </div>
 </div>
 
 <div class="tab-content" id="safety-tab">
     <div class="settings-group">
         <label for="harassmentThreshold">Harassment (0-3)</label>
-        <input type="range" id="harassmentThreshold" min="0" max="3" step="1">
-        <span id="harassmentValue">High</span>
+        <div class="slider-container">
+            <input type="range" min="0" max="3" value="3" id="harassmentThreshold">
+            <span id="harassmentValue">High</span>
+        </div>
     </div>
     <div class="settings-group">
         <label for="dangerousContentThreshold">Dangerous Content (0-3)</label>
-        <input type="range" id="dangerousContentThreshold" min="0" max="3" step="1">
-        <span id="dangerousValue">High</span>
+        <div class="slider-container">
+            <input type="range" min="0" max="3" value="3" id="dangerousContentThreshold">
+            <span id="dangerousValue">High</span>
+        </div>
     </div>
     <div class="settings-group">
         <label for="sexuallyExplicitThreshold">Sexually Explicit (0-3)</label>
-        <input type="range" id="sexuallyExplicitThreshold" min="0" max="3" step="1">
-        <span id="sexualValue">High</span>
+        <div class="slider-container">
+            <input type="range" min="0" max="3" value="3" id="sexuallyExplicitThreshold">
+            <span id="sexualValue">High</span>
+        </div>
     </div>
     <div class="settings-group">
         <label for="civicIntegrityThreshold">Civic Integrity (0-3)</label>
-        <input type="range" id="civicIntegrityThreshold" min="0" max="3" step="1">
-        <span id="civicValue">High</span>
+        <div class="slider-container">
+            <input type="range" min="0" max="3" value="3" id="civicIntegrityThreshold">
+            <span id="civicValue">High</span>
+        </div>
     </div>
 </div>
 
 <div class="tab-content" id="misc-tab">
     <div class="settings-group">
-        <label>Random Option 1</label>
-        <input type="checkbox" id="randomOption1">
-    </div>
-    <div class="settings-group">
-        <label>Random Option 2</label>
-        <input type="checkbox" id="randomOption2">
-    </div>
-    <div class="settings-group">
-        <label for="randomOption3">Random Option 3</label>
-        <input type="text" id="randomOption3" placeholder="Enter value">
+        <h3>Miscellaneous Options</h3>
+        <p>Additional options will appear here in future updates.</p>
     </div>
 </div>
 
