@@ -233,6 +233,9 @@ export class GeminiAgent{
         console.info('Screen sharing stopped');
     }
 
+    /**
+     * Toggles camera capture on/off
+     */
     async toggleCamera() {
         if (this.cameraInterval) {
             await this.stopCameraCapture();
@@ -241,6 +244,9 @@ export class GeminiAgent{
         }
     }
 
+    /**
+     * Toggles screen sharing on/off
+     */
     async toggleScreenShare() {
         if (this.screenInterval) {
             await this.stopScreenShare();

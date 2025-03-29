@@ -122,13 +122,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Screen sharing handler
+        let isScreenShareActive = false;
+
+        // Listen for screen share stopped events (from native browser controls)
+        agent.on('screenshare_stopped', () => {
+            elements.screenBtn.classList.remove('active');
+            isScreenShareActive = false;
+            console.info('Screen share stopped');
+        });
+
         if (elements.screenBtn) {
             elements.screenBtn.addEventListener('click', async () => {
                 try {
                     await ensureAgentReady(agent);
-                    await agent.toggleScreenShare();
-                    elements.screenBtn.classList.toggle('active');
-                    addStatusMessage(elements.screenBtn.classList.contains('active') ? 'Screen sharing activated' : 'Screen sharing deactivated');
+
+                    if (!isScreenShareActive) {
+                        await agent.startScreenShare();
+                        elements.screenBtn.classList.add('active');
+                    } else {
+                        await agent.stopScreenShare();
+                        elements.screenBtn.classList.remove('active');
+                    }
+                    isScreenShareActive = !isScreenShareActive;
                 } catch (error) {
                     console.error('Screen sharing error:', error);
                     addStatusMessage('Screen sharing access error');
