@@ -317,6 +317,11 @@ body {
     max-height: 80vh;
     overflow-y: auto;
     z-index: 1001;
+    display: none;
+}
+
+.settings-dialog.active {
+    display: block;
 }
 
 .settings-tabs {
@@ -427,6 +432,11 @@ input:checked + .toggle-slider:before {
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
+    display: none;
+}
+
+.settings-overlay.active {
+    display: block;
 }
 
 .settings-group {

@@ -14,12 +14,22 @@ class SettingsManager {
             // Create the overlay element
             this.overlay = document.createElement('div');
             this.overlay.className = 'settings-overlay';
-            this.overlay.addEventListener('click', () => this.hide());
+            this.overlay.addEventListener('click', (event) => {
+                // Only close if the overlay itself was clicked, not its children
+                if (event.target === this.overlay) {
+                    this.hide();
+                }
+            });
 
             // Create the dialog element
             this.dialog = document.createElement('div');
             this.dialog.className = 'settings-dialog';
             this.dialog.innerHTML = settingsTemplate;
+            
+            // Prevent dialog clicks from bubbling to the overlay
+            this.dialog.addEventListener('click', (event) => {
+                event.stopPropagation();
+            });
 
             // Add close button event listener
             const closeBtn = this.dialog.querySelector('.settings-close-btn');
@@ -218,6 +228,8 @@ class SettingsManager {
         this.initialize();
         if (!this.isOpen && this.overlay) {
             document.body.appendChild(this.overlay);
+            this.overlay.classList.add('active');
+            this.dialog.classList.add('active');
             this.isOpen = true;
             this.loadSettings();
         }
@@ -225,7 +237,13 @@ class SettingsManager {
 
     hide() {
         if (this.isOpen && this.overlay) {
-            document.body.removeChild(this.overlay);
+            this.overlay.classList.remove('active');
+            this.dialog.classList.remove('active');
+            setTimeout(() => {
+                if (!this.isOpen && this.overlay.parentNode) {
+                    document.body.removeChild(this.overlay);
+                }
+            }, 300); // Short delay to allow for transition
             this.isOpen = false;
         }
     }
