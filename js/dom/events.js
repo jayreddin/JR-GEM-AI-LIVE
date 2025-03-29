@@ -279,10 +279,13 @@ export function setupEventListeners(elements, settingsManager, agent, themeManag
                         const text = elements.messageInput.value.trim();
                         if (text) {
                             // Use the ChatManager to add the user message
-                            const chatManager = window.chatManager || (window.chatManager = new ChatManager());
-                            chatManager.addUserMessage(text);
-
-                            // Send the text to the agent
+                            const chatManager = window.chatManager;
+                            if (!chatManager) {
+                                console.error('ChatManager not initialized');
+                                return;
+                            }
+                            
+                            // Add message to chat and send to agent
                             chatManager.addUserMessage(text);
                             await agent.sendText(text);
                             elements.messageInput.value = '';
