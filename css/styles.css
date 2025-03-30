@@ -174,7 +174,7 @@ body {
 .model-selector {
     background-color: var(--button-bg);
     color: var(--text-color);
-    border: 1px solid var(--accent-color);
+    border: none;
     border-radius: 20px;
     padding: 0 15px;
     height: 32px;
@@ -182,7 +182,7 @@ body {
     font-family: inherit;
     font-size: 14px;
     outline: none;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    transition: background-color 0.2s ease;
     min-width: 120px;
     text-align: center;
 }
@@ -235,7 +235,7 @@ body {
     flex-direction: column;
     gap: 12px;
     /* Space between messages */
-    z-index: 1;
+    z-index: 6;
     /* Behind controls but above previews */
     /* font-size controlled by body */
     scrollbar-width: thin;
@@ -839,10 +839,13 @@ body {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    width: fit-content; /* Added for dynamic width */
 }
 
-.tab-btn {
+.tab-radio {
+    display: none;
+}
+
+.tab-label {
     padding: 10px 24px;
     background-color: var(--button-bg);
     color: var(--text-color);
@@ -851,16 +854,16 @@ body {
     cursor: pointer;
     font-weight: 600;
     transition: all 0.2s ease;
-    flex-grow: 1; /* Added for equal width distribution */
 }
 
-.tab-btn:hover {
+.tab-label:hover {
     background-color: var(--button-hover);
 }
 
-.tab-btn.active {
+.tab-radio:checked + .tab-label {
     background-color: var(--accent-color);
     color: var(--text-color);
+    box-shadow: 0 0 10px var(--accent-color);
 }
 
 /* Tab Content */

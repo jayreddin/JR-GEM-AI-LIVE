@@ -20,8 +20,10 @@
             </button>
 
             <div class="tab-container">
-                <button id="liveTab" class="tab-btn active">LIVE</button>
-                <button id="imgGenTab" class="tab-btn">IMG GEN</button>
+                <input type="radio" id="liveTab" name="tab" class="tab-radio" checked>
+                <label for="liveTab" class="tab-label">LIVE</label>
+                <input type="radio" id="imgGenTab" name="tab" class="tab-radio">
+                <label for="imgGenTab" class="tab-label">IMG GEN</label>
 
         <div class="model-selector-overlay">
             <select id="modelSelector" class="model-selector" aria-label="Select Gemini Model">
