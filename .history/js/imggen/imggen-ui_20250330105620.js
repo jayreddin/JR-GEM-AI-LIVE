@@ -11,7 +11,7 @@ export class ImageGenUI {
     setupUI() {
         this.imageDisplay.innerHTML = `
             <div id="imgGenModelDisplay" class="img-gen-model-display">
-                Gemini 2.0 Flash Exp Image Generation
+                Gemini 2.0-flash-exp-image-generation
             </div>
             <div class="image-display">
                 <div class="placeholder-text">Generated images will appear here</div>
