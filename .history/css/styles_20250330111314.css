@@ -90,8 +90,8 @@ body {
 /* --- Common Button Styles --- */
 .header-btn,
 .control-btn {
-    width: 90px;
-    height: 90px;
+    width: 100px;
+    height: 40px;
     border-radius: 50%;
     background-color: var(--button-bg);
     border: 1px solid var(--accent-color);
@@ -113,8 +113,8 @@ body {
 
 .header-btn svg,
 .control-btn svg {
-    width: 40px;
-    height: 40px;
+    width: 20px;
+    height: 20px;
     stroke: currentColor;
     stroke-width: 2;
     fill: none;
@@ -194,10 +194,10 @@ body {
 /* --- Content Areas --- */
 .tab-content {
     position: absolute;
-    top: 110px; /* Adjusted for new model display position */
+    top: 115px; /* Adjusted for new model display position */
     left: 15px;
     right: 15px;
-    bottom: 110px; /* Adjusted for repositioned controls */
+    bottom: 160px; /* Adjusted for repositioned controls */
     display: none;
     opacity: 0;
     transition: opacity 0.3s ease;

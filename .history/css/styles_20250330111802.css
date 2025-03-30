@@ -197,7 +197,7 @@ body {
     top: 110px; /* Adjusted for new model display position */
     left: 15px;
     right: 15px;
-    bottom: 110px; /* Adjusted for repositioned controls */
+    bottom: 10px; /* Adjusted for repositioned controls */
     display: none;
     opacity: 0;
     transition: opacity 0.3s ease;

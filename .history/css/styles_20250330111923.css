@@ -289,7 +289,7 @@ body {
 
 /* --- Control Buttons (Common) --- */
 .control-btn {
-    width: 48px;
+    width: 480px;
     height: 48px;
     border-radius: 50%;
     background-color: var(--button-bg);
