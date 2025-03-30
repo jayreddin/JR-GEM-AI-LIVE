@@ -194,6 +194,8 @@ body {
     transition: border-color 0.2s ease, background-color 0.2s ease;
     min-width: 150px;
     /* Give it some minimum width */
+    text-align: center;
+    /* Center text in dropdown */
 }
 
 .model-selector:hover {
@@ -280,8 +282,8 @@ body {
     /* Allow long words to break */
     line-height: 1.45;
     /* Slightly more spacing */
-    /* border: 1px solid var(--accent-color); */
-    /* Border removed, using background */
+    border: 2px solid var(--accent-color);
+    /* Added green border */
     display: flex;
     flex-direction: column;
     opacity: 0;
@@ -407,7 +409,8 @@ body {
 .camera-btn,
 .screen-btn,
 .mic-btn,
-.speak-btn {
+.speak-btn,
+.new-chat-btn {
     width: 48px;
     /* Slightly larger */
     height: 48px;
@@ -438,7 +441,8 @@ body {
 .camera-btn:hover,
 .screen-btn:hover,
 .mic-btn:hover,
-.speak-btn:hover {
+.speak-btn:hover,
+.new-chat-btn:hover {
     background-color: var(--button-hover);
     transform: translateY(-2px);
     /* Lift effect */
@@ -449,7 +453,8 @@ body {
 .camera-btn.active,
 .screen-btn.active,
 .mic-btn.active,
-.speak-btn.active {
+.speak-btn.active,
+.new-chat-btn.active {
     background-color: var(--danger-color);
     /* Red when active */
     border-color: rgba(255, 255, 255, 0.7);
@@ -941,6 +946,57 @@ input:focus+.slider {
 
 /* Example: Adjust layout for smaller screens */
 @media screen and (max-width: 768px) {
+    body {
+        overflow: hidden;
+    }
+    
+    .app-container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+    
+    .header-controls {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: var(--bg-color);
+        padding: 10px 15px;
+        z-index: 100;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    .chat-history {
+        position: fixed;
+        top: 60px;
+        bottom: 130px;
+        left: 0;
+        right: 0;
+        padding: 15px;
+        overflow-y: auto;
+    }
+    
+    .control-bar {
+        position: fixed;
+        bottom: 65px;
+        left: 0;
+        right: 0;
+        background: var(--bg-color);
+        padding: 10px 0;
+        z-index: 100;
+    }
+    
+    .text-input-container {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        background: var(--bg-color);
+        padding: 5px 0;
+        z-index: 100;
+    }
+    
     .chat-message {
         max-width: 90%;
         /* Allow messages to be slightly wider */

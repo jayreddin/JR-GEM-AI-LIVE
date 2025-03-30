@@ -783,7 +783,7 @@ export class GeminiAgent {
         }
     }
 
-    /** Toggles microphone recording on/off */
+    /** Toggles microphone recording (start/stop) */
     async toggleMic() {
         if (!this.initialized) {
             console.error(`${this.name}: Cannot toggle mic, agent not initialized.`);
@@ -980,5 +980,23 @@ export class GeminiAgent {
                 // Continue notifying other listeners
             }
         }
+    }
+    /** Toggles text-to-speech for model responses */
+    async toggleTTS() {
+        this.ttsMuted = !this.ttsMuted;
+
+        // Ensure audio context is resumed when enabling TTS
+        if (!this.ttsMuted && this.audioContext && this.audioContext.state !== 'running') {
+            try {
+                await this.audioContext.resume();
+                console.info(`${this.name}: Audio context resumed for TTS.`);
+            } catch (error) {
+                console.error(`${this.name}: Failed to resume audio context for TTS:`, error);
+            }
+        }
+
+        // The next model response will use the updated value
+        console.info(`${this.name}: Text-to-speech ${this.ttsMuted ? 'disabled' : 'enabled'}.`);
+        return this.ttsMuted;
     }
 }
