@@ -174,7 +174,7 @@ body {
 .model-selector {
     background-color: var(--button-bg);
     color: var(--text-color);
-    border: none;
+    border: 1px solid var(--accent-color);
     border-radius: 20px;
     padding: 0 15px;
     height: 32px;
@@ -830,40 +830,56 @@ body {
     border-radius: 50%;
 
 /* --- Tabs Styling --- */
-.tab-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
+.menuHeadButtn {
     margin: 0 auto;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
 }
 
-.tab-radio {
-    display: none;
+.menuHeadButtn div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
-.tab-label {
-    padding: 10px 24px;
+.menuHeadButtn input[type="radio"] {
+    clip: rect(0 0 0 0);
+    clip-path: inset(100%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.menuHeadButtn input[type="radio"]:checked + span {
+    box-shadow: 0 0 0 0.0625em var(--accent-color);
     background-color: var(--button-bg);
-    color: var(--text-color);
-    border: 2px solid var(--accent-color);
-    border-radius: 6px;
+    z-index: 1;
+    color: var(--accent-color);
+}
+
+.menuHeadButtn label span {
+    display: block;
     cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-.tab-label:hover {
-    background-color: var(--button-hover);
-}
-
-.tab-radio:checked + .tab-label {
-    background-color: var(--accent-color);
+    background-color: var(--button-bg);
+    padding: 0.375em .75em;
+    position: relative;
+    margin-left: .0625em;
+    box-shadow: 0 0 0 0.0625em var(--accent-color);
+    letter-spacing: .05em;
     color: var(--text-color);
-    box-shadow: 0 0 10px var(--accent-color);
+    text-align: center;
+    transition: background-color .5s ease;
+}
+
+.menuHeadButtn label:first-child span {
+    border-radius: .375em 0 0 .375em;
+}
+
+.menuHeadButtn label:last-child span {
+    border-radius: 0 .375em .375em 0;
 }
 
 /* Tab Content */

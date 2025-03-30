@@ -19,11 +19,17 @@
                 </svg>
             </button>
 
-            <div class="tab-container">
-                <input type="radio" id="liveTab" name="tab" class="tab-radio" checked>
-                <label for="liveTab" class="tab-label">LIVE</label>
-                <input type="radio" id="imgGenTab" name="tab" class="tab-radio">
-                <label for="imgGenTab" class="tab-label">IMG GEN</label>
+            <div class="menuHeadButtn">
+                <div>
+                    <label>
+                        <input type="radio" id="liveTab" name="tab" checked>
+                        <span>LIVE</span>
+                    </label>
+                    <label>
+                        <input type="radio" id="imgGenTab" name="tab">
+                        <span>IMG GEN</span>
+                    </label>
+                </div>
 
         <div class="model-selector-overlay">
             <select id="modelSelector" class="model-selector" aria-label="Select Gemini Model">
@@ -67,7 +73,12 @@
         <div class="text-input-container">
             <input type="text" id="messageInput" placeholder="Type your message..." class="text-input"
                 aria-label="Message Input">
-            <button id="sendBtn" class="send-btn" aria-label="Send Message">➤</button>
+            <button id="sendBtn" class="send-btn" aria-label="Send Message">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
         </div>
     </div>
 
