@@ -845,22 +845,18 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
     margin: 0 auto;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
 }
 
 .tab-btn {
-    padding: 10px 24px;
+    padding: 8px 16px;
     background-color: var(--button-bg);
     color: var(--text-color);
-    border: 2px solid var(--accent-color);
+    border: 1px solid var(--accent-color);
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
-    transition: all 0.2s ease;
     transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
@@ -881,32 +877,11 @@ body {
     left: 15px;
     right: 15px;
     bottom: 140px;
+    z-index: 1;
 }
 
 .tab-content.active {
     display: block;
-}
-
-#liveContent {
-    z-index: 2;
-}
-
-#imgGenContent {
-    z-index: 1;
-}
-
-#chatHistory {
-    z-index: 0;
-}
-
-/* Ensure IMG GEN content is above chat history */
-#imgGenContent {
-    z-index: 2;
-}
-
-/* Ensure chat history is behind when in IMG GEN mode */
-#chatHistory.hidden {
-    display: none !important;
 }
 
 /* Control Bars */

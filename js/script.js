@@ -112,55 +112,68 @@ document.addEventListener('DOMContentLoaded', () => {
     const liveControlBar = document.getElementById('liveControlBar');
     const imgGenControlBar = document.getElementById('imgGenControlBar');
     const modelSelector = document.getElementById('modelSelector');
-    const chatHistory = document.getElementById('chatHistory');
-
+    
     // Function to switch between tabs
     function switchTab(tab) {
-        console.log(`Switching to ${tab} tab`);
-
         // Update tab buttons
         liveTab.classList.toggle('active', tab === 'live');
         imgGenTab.classList.toggle('active', tab === 'imggen');
-
-        // Update content visibility
-        if (liveContent) {
-            liveContent.style.display = tab === 'live' ? 'block' : 'none';
-            liveContent.classList.toggle('active', tab === 'live');
-        }
-
-        if (imgGenContent) {
-            imgGenContent.style.display = tab === 'imggen' ? 'block' : 'none';
-            imgGenContent.classList.toggle('active', tab === 'imggen');
-        }
-
+        
+        // Update content
+        liveContent.classList.toggle('active', tab === 'live');
+        imgGenContent.classList.toggle('active', tab === 'imggen');
+        
         // Update control bars
-        if (liveControlBar) {
-            liveControlBar.style.display = tab === 'live' ? 'flex' : 'none';
-            liveControlBar.classList.toggle('active', tab === 'live');
-        }
-
-        if (imgGenControlBar) {
-            imgGenControlBar.style.display = tab === 'imggen' ? 'flex' : 'none';
-            imgGenControlBar.classList.toggle('active', tab === 'imggen');
-        }
-
-        // Update chat history visibility
-        if (chatHistory) {
-            chatHistory.style.display = tab === 'live' ? 'flex' : 'none';
+        liveControlBar.classList.toggle('active', tab === 'live');
+        imgGenControlBar.classList.toggle('active', tab === 'imggen');
+        
+        // For IMG GEN tab, set the model to gemini-2.0-flash-exp-image-generation
+        if (tab === 'imggen' && modelSelector) {
+            // Save the current model for when we switch back to LIVE
+            if (!modelSelector.dataset.savedModel) {
+                modelSelector.dataset.savedModel = modelSelector.value;
+            }
+            
+            // Find the image generation model option
+            const imgGenOption = Array.from(modelSelector.options).find(
+                option => option.value === 'models/gemini-2.0-flash-exp-image-generation'
+            );
+            
+            // If option exists, select it
+            if (imgGenOption) {
+                modelSelector.value = 'models/gemini-2.0-flash-exp-image-generation';
+                // Trigger change event to update the agent
+                modelSelector.dispatchEvent(new Event('change'));
+            } else {
+                // Create the option if it doesn't exist
+                const option = document.createElement('option');
+                option.value = 'models/gemini-2.0-flash-exp-image-generation';
+                option.textContent = 'Gemini 2.0 Flash Image Generation';
+                modelSelector.appendChild(option);
+                modelSelector.value = 'models/gemini-2.0-flash-exp-image-generation';
+                // Trigger change event
+                modelSelector.dispatchEvent(new Event('change'));
+            }
+            
+            // Disable model selector in IMG GEN mode
+            modelSelector.disabled = true;
+        } else if (tab === 'live' && modelSelector) {
+            // Restore saved model if switching back to LIVE
+            if (modelSelector.dataset.savedModel) {
+                modelSelector.value = modelSelector.dataset.savedModel;
+                // Trigger change event
+                modelSelector.dispatchEvent(new Event('change'));
+            }
+            
+            // Enable model selector in LIVE mode
+            modelSelector.disabled = false;
         }
     }
-
+    
     // Tab click handlers
-    if (liveTab) {
-        liveTab.addEventListener('click', () => switchTab('live'));
-    }
-    if (imgGenTab) {
-        imgGenTab.addEventListener('click', () => switchTab('imggen'));
-    }
-
-    // Initialize with LIVE tab active
-    switchTab('live');
-
+    liveTab.addEventListener('click', () => switchTab('live'));
+    imgGenTab.addEventListener('click', () => switchTab('imggen'));
+    
     // IMG GEN mode controls
     const filtersBtn = document.getElementById('filtersBtn');
     const filtersPopup = document.getElementById('filtersPopup');
@@ -171,24 +184,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const newImageBtn = document.getElementById('newImageBtn');
     const storyBookBtn = document.getElementById('storyBookBtn');
     const birthdayCardBtn = document.getElementById('birthdayCardBtn');
-
+    
     // Filters popup handlers
     if (filtersBtn && filtersPopup && closeFiltersBtn) {
         filtersBtn.addEventListener('click', () => {
             filtersPopup.style.display = 'flex';
         });
-
+        
         closeFiltersBtn.addEventListener('click', () => {
             filtersPopup.style.display = 'none';
         });
-
+        
         // Close popup when clicking outside
         filtersPopup.addEventListener('click', (e) => {
             if (e.target === filtersPopup) {
                 filtersPopup.style.display = 'none';
             }
         });
-
+        
         // Apply filters
         if (applyFiltersBtn) {
             applyFiltersBtn.addEventListener('click', () => {
@@ -196,20 +209,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 const imageAmount = document.getElementById('imageAmount').value;
                 const imageSize = document.getElementById('imageSize').value;
                 const imageFilter = document.getElementById('imageFilter').value;
-
+                
                 // Apply filters logic here - will be implemented when processing generation
                 console.log(`Filters applied: Amount=${imageAmount}, Size=${imageSize}, Filter=${imageFilter}`);
                 filtersPopup.style.display = 'none';
             });
         }
     }
-
+    
     // Image upload handler
     if (uploadImageBtn && imageUpload) {
         uploadImageBtn.addEventListener('click', () => {
             imageUpload.click();
         });
-
+        
         imageUpload.addEventListener('change', (e) => {
             if (e.target.files && e.target.files[0]) {
                 const reader = new FileReader();
@@ -223,13 +236,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         img.classList.add('generated-image');
                         img.alt = 'Uploaded image';
                         imageDisplay.appendChild(img);
-
+                        
                         // Store the image data for editing
                         window.uploadedImage = {
                             data: event.target.result,
                             file: e.target.files[0]
                         };
-
+                        
                         // Add visual indicator that image is ready for editing
                         uploadImageBtn.classList.add('upload-active');
                     }
@@ -238,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
+    
     // New Image generation
     if (newImageBtn) {
         newImageBtn.addEventListener('click', () => {
@@ -247,84 +260,84 @@ document.addEventListener('DOMContentLoaded', () => {
             if (imageDisplay) {
                 imageDisplay.innerHTML = '<div class="placeholder-text">Generated images will appear here</div>';
             }
-
+            
             // Reset upload indicator
             if (uploadImageBtn) {
                 uploadImageBtn.classList.remove('upload-active');
             }
-
+            
             // Clear uploaded image data
             window.uploadedImage = null;
         });
     }
-
+    
     // Story Book mode
     if (storyBookBtn) {
         storyBookBtn.addEventListener('click', () => {
             // Toggle active state
             storyBookBtn.classList.toggle('active');
-
+            
             // If activating Story Book mode, deactivate Birthday Card mode
             if (storyBookBtn.classList.contains('active') && birthdayCardBtn) {
                 birthdayCardBtn.classList.remove('active');
             }
-
+            
             // Update mode flag
             window.storyBookMode = storyBookBtn.classList.contains('active');
             console.log(`Story Book mode ${window.storyBookMode ? 'activated' : 'deactivated'}`);
         });
     }
-
+    
     // Birthday Card mode
     if (birthdayCardBtn) {
         birthdayCardBtn.addEventListener('click', () => {
             // Toggle active state
             birthdayCardBtn.classList.toggle('active');
-
+            
             // If activating Birthday Card mode, deactivate Story Book mode
             if (birthdayCardBtn.classList.contains('active') && storyBookBtn) {
                 storyBookBtn.classList.remove('active');
             }
-
+            
             // Update mode flag
             window.birthdayCardMode = birthdayCardBtn.classList.contains('active');
             console.log(`Birthday Card mode ${window.birthdayCardMode ? 'activated' : 'deactivated'}`);
         });
     }
-
+    
     // Image generation and editing handler
     const sendBtn = document.getElementById('sendBtn');
     const messageInput = document.getElementById('messageInput');
-
+    
     // Override send button in IMG GEN mode
     if (sendBtn && messageInput) {
         const originalClickHandler = sendBtn.onclick;
-
+        
         sendBtn.onclick = function(event) {
             if (imgGenContent.classList.contains('active')) {
                 // We're in IMG GEN mode
                 const prompt = messageInput.value.trim();
-
+                
                 if (prompt) {
                     // Show loading state
                     const imageDisplay = document.getElementById('imageDisplay');
                     if (imageDisplay) {
                         imageDisplay.innerHTML = '<div class="placeholder-text">Generating image...</div>';
                     }
-
+                    
                     // Get filter settings
                     const imageAmount = document.getElementById('imageAmount')?.value || '1';
                     const imageSize = document.getElementById('imageSize')?.value || '512x512';
                     const imageFilter = document.getElementById('imageFilter')?.value || 'none';
-
+                    
                     // Determine generation mode
                     let generationMode = 'standard';
                     if (window.storyBookMode) generationMode = 'storybook';
                     if (window.birthdayCardMode) generationMode = 'birthday';
-
+                    
                     // Check if this is image editing (has uploaded image)
                     const isEditing = !!window.uploadedImage;
-
+                    
                     console.log(`Image ${isEditing ? 'editing' : 'generation'} request:`, {
                         prompt,
                         mode: generationMode,
@@ -334,10 +347,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             filter: imageFilter
                         }
                     });
-
+                    
                     // Clear input
                     messageInput.value = '';
-
+                    
                     // For now, we'll simulate image generation with a placeholder
                     // In a real implementation, this would call the Gemini API
                     setTimeout(() => {
@@ -347,32 +360,32 @@ document.addEventListener('DOMContentLoaded', () => {
                             img.src = 'https://picsum.photos/512/512?random=' + Math.random(); // Placeholder image
                             img.classList.add('generated-image');
                             img.alt = 'Generated image';
-
+                            
                             imageDisplay.innerHTML = '';
                             imageDisplay.appendChild(img);
                         }
                     }, 1500);
                 }
-
+                
                 return; // Don't proceed with original handler
             }
-
+            
             // If we're in LIVE mode, use the original handler
             if (typeof originalClickHandler === 'function') {
                 originalClickHandler.call(this, event);
             }
         };
-
+        
         // Override Enter key as well
         const originalKeydownHandler = messageInput.onkeydown;
-
+        
         messageInput.onkeydown = function(event) {
             if (event.key === 'Enter' && !event.shiftKey && imgGenContent.classList.contains('active')) {
                 event.preventDefault();
                 sendBtn.click();
                 return;
             }
-
+            
             // Use original handler for other cases
             if (typeof originalKeydownHandler === 'function') {
                 originalKeydownHandler.call(this, event);
