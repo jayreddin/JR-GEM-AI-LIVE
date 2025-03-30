@@ -24,6 +24,74 @@ export class PreviewManager {
                         this.toggleMinimize(preview);
                     }
                 });
+
+                // Touch events for pinch-to-zoom
+                let initialDistance = 0;
+                let initialWidth = 0;
+                let initialHeight = 0;
+
+                preview.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 2) {
+                        e.preventDefault();
+                        initialDistance = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                        initialWidth = preview.offsetWidth;
+                        initialHeight = preview.offsetHeight;
+                    }
+                });
+
+                preview.addEventListener('touchmove', (e) => {
+                    if (e.touches.length === 2) {
+                        e.preventDefault();
+                        const currentDistance = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                        const scale = currentDistance / initialDistance;
+                        const newWidth = Math.min(Math.max(initialWidth * scale, 120), window.innerWidth * 0.8);
+                        const aspectRatio = initialHeight / initialWidth;
+                        preview.style.width = `${newWidth}px`;
+                        preview.style.height = `${newWidth * aspectRatio}px`;
+                    }
+                });
+
+                // Mouse events for resize handle
+                const resizeHandle = document.createElement('div');
+                resizeHandle.className = 'resize-handle';
+                preview.appendChild(resizeHandle);
+
+                let isResizing = false;
+                let startX, startY, startWidth, startHeight;
+
+                resizeHandle.addEventListener('mousedown', (e) => {
+                    if (preview.classList.contains('minimized')) return;
+                    isResizing = true;
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    startWidth = preview.offsetWidth;
+                    startHeight = preview.offsetHeight;
+                    document.addEventListener('mousemove', handleMouseMove);
+                    document.addEventListener('mouseup', handleMouseUp);
+                });
+
+                const handleMouseMove = (e) => {
+                    if (!isResizing) return;
+                    e.preventDefault();
+                    const deltaX = e.clientX - startX;
+                    const deltaY = e.clientY - startY;
+                    const aspectRatio = startHeight / startWidth;
+                    const newWidth = Math.min(Math.max(startWidth + deltaX, 120), window.innerWidth * 0.8);
+                    preview.style.width = `${newWidth}px`;
+                    preview.style.height = `${newWidth * aspectRatio}px`;
+                };
+
+                const handleMouseUp = () => {
+                    isResizing = false;
+                    document.removeEventListener('mousemove', handleMouseMove);
+                    document.removeEventListener('mouseup', handleMouseUp);
+                };
             }
         });
 

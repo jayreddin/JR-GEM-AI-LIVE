@@ -1,0 +1,305 @@
+/* Adding missing features from css/test */
+
+/* --- Visualizer --- */
+.visualizer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    z-index: 0;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* --- Preview Containers --- */
+.preview-container {
+    position: absolute;
+    bottom: 90px;
+    right: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 5;
+}
+
+.media-preview {
+    width: 160px;
+    height: 120px;
+    background-color: var(--chat-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: none;
+    position: relative;
+    touch-action: none;
+}
+
+.media-preview[aria-hidden="false"] {
+    display: block;
+}
+
+.media-preview video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.media-preview.minimized {
+    width: 50px !important;
+    height: 37px !important;
+    cursor: pointer;
+}
+
+/* Preview Header Controls */
+.preview-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 3px 6px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: var(--text-color);
+    font-size: 0.8em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    z-index: 2;
+}
+
+.media-preview.minimized .preview-header {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.preview-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.preview-btn {
+    width: 18px;
+    height: 18px;
+    border: none;
+    background: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1em;
+    transition: all 0.2s ease;
+}
+
+.preview-btn:hover {
+    color: var(--accent-color);
+    transform: scale(1.1);
+}
+
+/* Resize Handle */
+.resize-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    cursor: se-resize;
+    z-index: 3;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.resize-handle::before {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid var(--text-color);
+    border-bottom: 2px solid var(--text-color);
+}
+
+.resize-handle:hover {
+    opacity: 1;
+}
+
+.media-preview.minimized .resize-handle {
+    display: none;
+}
+
+/* --- Status Messages --- */
+.status-container {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+    z-index: 3;
+    width: 80%;
+    max-height: 100px;
+    overflow: hidden;
+}
+
+.status-message {
+    font-size: 0.8em;
+    color: var(--text-color);
+    opacity: 0;
+    text-align: center;
+    padding: 4px 12px;
+    border-radius: 15px;
+    background-color: rgba(0, 0, 0, 0.6);
+    transition: all 0.4s ease-out;
+    max-width: 100%;
+    border: none;
+    transform: translateY(10px);
+    width: fit-content;
+}
+
+.status-message.visible {
+    opacity: 0.8;
+    transform: translateY(0);
+}
+
+.status-message.fade-out {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+/* --- Tab Switcher Improvements --- */
+.tab-switcher .radio-group {
+    display: flex;
+    background-color: var(--button-bg);
+    padding: 3px;
+    border-radius: 25px;
+    border: 1px solid var(--accent-color);
+}
+
+.tab-switcher input[type="radio"] {
+    clip: rect(0 0 0 0);
+    clip-path: inset(100%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.tab-switcher .tab-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 18px;
+    border-radius: 20px;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border: 1px solid transparent;
+}
+
+.tab-switcher input[type="radio"]:checked + .tab-button {
+    background-color: var(--accent-color);
+    color: white;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
+}
+
+/* --- Settings Improvements --- */
+.settings-group {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.1);
+}
+
+.settings-group small {
+    display: block;
+    color: var(--text-color);
+    opacity: 0.7;
+    font-size: 0.8em;
+    margin-top: 5px;
+}
+
+/* --- Upload Area Improvements --- */
+#imgUploadArea {
+    width: 100%;
+    height: 150px;
+    border: 2px dashed var(--accent-color);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 10px;
+    position: relative;
+    background-color: var(--button-bg);
+}
+
+#imgUploadArea:hover {
+    border-color: #43a047;
+    background: rgba(67, 160, 71, 0.1);
+}
+
+#imgUploadArea.drag-over {
+    border-color: #43a047;
+    background: rgba(67, 160, 71, 0.2);
+}
+
+/* Ensure proper mobile layout */
+@media screen and (max-width: 768px) {
+    .preview-container {
+        position: fixed;
+        bottom: 130px;
+        right: 10px;
+        flex-direction: row;
+        background: rgba(0,0,0,0.3);
+        padding: 5px;
+        border-radius: 8px;
+    }
+
+    .media-preview {
+        width: 100px;
+        height: 75px;
+    }
+
+    .status-container {
+        bottom: 130px;
+    }
+
+    .visualizer {
+        height: 60px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .preview-container {
+        bottom: 120px;
+        right: 5px;
+        gap: 5px;
+    }
+
+    .media-preview {
+        width: 80px;
+        height: 60px;
+    }
+
+    .media-preview.minimized {
+        width: 36px !important;
+        height: 27px !important;
+    }
+
+    .visualizer {
+        height: 40px;
+    }
+}

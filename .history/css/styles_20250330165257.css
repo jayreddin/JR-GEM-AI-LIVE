@@ -1,0 +1,242 @@
+/* Adding remaining missing features from css/test */
+
+/* --- Slider Improvements --- */
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.slider-container input[type="range"] {
+    flex: 1;
+    cursor: pointer;
+    height: 6px;
+    background: var(--button-hover);
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.slider-container input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.slider-container input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.slider-container span {
+    min-width: 70px;
+    text-align: right;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+/* --- Switch Improvements --- */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    vertical-align: middle;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--toggle-bg);
+    border-radius: 24px;
+    transition: all 0.3s ease;
+}
+
+.switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.switch input:checked + .slider {
+    background-color: var(--accent-color);
+}
+
+.switch input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+.switch input:focus + .slider {
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+}
+
+/* --- Tab Content Transitions --- */
+.tab-content {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.tab-content.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- IMG GEN Options Improvements --- */
+.img-gen-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    padding: 15px;
+    background: var(--button-bg);
+    border-radius: 8px;
+}
+
+.img-gen-option {
+    padding: 10px;
+    background: var(--bg-color);
+    border-radius: 6px;
+    border: 1px solid var(--accent-color);
+}
+
+.img-gen-option label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 0.9em;
+}
+
+.img-gen-option select,
+.img-gen-option input[type="number"] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
+    background: var(--button-bg);
+    color: var(--text-color);
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+}
+
+.img-gen-option select:focus,
+.img-gen-option input[type="number"]:focus {
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+}
+
+/* --- Error Display Improvements --- */
+.error-text {
+    color: var(--danger-color);
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 68, 68, 0.1);
+    border-radius: 8px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-icon {
+    font-size: 1.2em;
+    margin-right: 8px;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+/* --- Button Loading States --- */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Improved mobile support for new elements */
+@media screen and (max-width: 768px) {
+    .img-gen-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .error-text {
+        margin: 5px;
+        padding: 15px;
+        font-size: 0.9em;
+    }
+    
+    .slider-container {
+        gap: 10px;
+    }
+    
+    .slider-container span {
+        min-width: 60px;
+        font-size: 0.8em;
+    }
+}
+
+/* Improved focus states */
+.img-gen-option select:focus-visible,
+.img-gen-option input[type="number"]:focus-visible {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+}
+
+/* Enhanced transitions */
+.popup-overlay,
+.settings-dialog,
+.model-display-container,
+.preview-header,
+.media-preview,
+.status-message {
+    will-change: transform, opacity;
+}
