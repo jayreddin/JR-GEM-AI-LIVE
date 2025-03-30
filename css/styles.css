@@ -847,13 +847,15 @@ body {
     align-items: center;
     gap: 10px;
     margin: 0 auto;
+    flex-grow: 1;
+    text-align: center;
 }
 
 .tab-btn {
     padding: 8px 16px;
     background-color: var(--button-bg);
     color: var(--text-color);
-    border: 1px solid var(--accent-color);
+    border: 2px solid var(--accent-color);
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
@@ -882,6 +884,16 @@ body {
 
 .tab-content.active {
     display: block;
+}
+
+/* Ensure IMG GEN content is above chat history */
+#imgGenContent {
+    z-index: 2;
+}
+
+/* Ensure chat history is behind when in IMG GEN mode */
+#chatHistory.hidden {
+    display: none !important;
 }
 
 /* Control Bars */

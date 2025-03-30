@@ -112,20 +112,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const liveControlBar = document.getElementById('liveControlBar');
     const imgGenControlBar = document.getElementById('imgGenControlBar');
     const modelSelector = document.getElementById('modelSelector');
+    const chatHistory = document.getElementById('chatHistory');
     
     // Function to switch between tabs
     function switchTab(tab) {
+        console.log(`Switching to ${tab} tab`);
+        
         // Update tab buttons
         liveTab.classList.toggle('active', tab === 'live');
         imgGenTab.classList.toggle('active', tab === 'imggen');
         
         // Update content
-        liveContent.classList.toggle('active', tab === 'live');
-        imgGenContent.classList.toggle('active', tab === 'imggen');
+        if (liveContent) liveContent.classList.toggle('active', tab === 'live');
+        if (imgGenContent) imgGenContent.classList.toggle('active', tab === 'imggen');
         
         // Update control bars
-        liveControlBar.classList.toggle('active', tab === 'live');
-        imgGenControlBar.classList.toggle('active', tab === 'imggen');
+        if (liveControlBar) liveControlBar.classList.toggle('active', tab === 'live');
+        if (imgGenControlBar) imgGenControlBar.classList.toggle('active', tab === 'imggen');
+        
+        // Hide chat history in IMG GEN mode
+        if (chatHistory) {
+            chatHistory.style.display = tab === 'live' ? 'flex' : 'none';
+        }
         
         // For IMG GEN tab, set the model to gemini-2.0-flash-exp-image-generation
         if (tab === 'imggen' && modelSelector) {
@@ -171,8 +179,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Tab click handlers
-    liveTab.addEventListener('click', () => switchTab('live'));
-    imgGenTab.addEventListener('click', () => switchTab('imggen'));
+    if (liveTab) {
+        liveTab.addEventListener('click', () => switchTab('live'));
+    }
+    if (imgGenTab) {
+        imgGenTab.addEventListener('click', () => switchTab('imggen'));
+    }
+    
+    // Initialize with LIVE tab active
+    switchTab('live');
     
     // IMG GEN mode controls
     const filtersBtn = document.getElementById('filtersBtn');
