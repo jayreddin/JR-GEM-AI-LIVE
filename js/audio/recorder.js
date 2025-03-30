@@ -10,7 +10,7 @@ export class AudioRecorder extends EventTarget { // Inherit from EventTarget if 
      * Creates an AudioRecorder instance.
      */
     constructor() {
-        // super(); // Call super() if inheriting from EventTarget
+        super(); // Call super() if inheriting from EventTarget
 
         // Audio Configuration
         this.targetSampleRate = 16000; // Standard sample rate for many STT services like Deepgram
