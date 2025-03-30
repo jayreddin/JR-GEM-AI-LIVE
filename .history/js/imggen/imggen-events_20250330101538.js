@@ -111,25 +111,19 @@ export class ImageGenEvents {
                 }
             };
             popup.addEventListener('click', clickHandler);
-        }
-    }
-
-    hidePopup(popupId) {
         const popup = document.getElementById(popupId);
-        if (popup) {
+        if (popup && popup.classList.contains('active')) {
             popup.classList.remove('active');
-            popup.style.opacity = '0';
-            
-            // Wait for fade out transition
-            setTimeout(() => {
-                if (!popup.classList.contains('active')) {
-                    popup.style.display = 'none';
-                }
-            }, 300);
-            
             if (this.activePopup === popupId) {
                 this.activePopup = null;
             }
+            // Wait for opacity transition before setting display:none
+            setTimeout(() => {
+                // Double check it wasn't immediately re-opened
+                if (!popup.classList.contains('active')) {
+                    popup.style.display = 'none';
+                }
+            }, 300); // Match CSS transition duration
         }
     }
 

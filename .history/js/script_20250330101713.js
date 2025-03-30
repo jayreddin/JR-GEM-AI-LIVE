@@ -16,13 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM Ready. Initializing components...");
 
     // Initialize managers first as other components might depend on them
-    window.mediaManager = MediaManager;
-    window.statusManager = StatusManager;
-    window.settingsManager = SettingsManager;
-    window.chatManager = new ChatManager();
-
-    // Initialize control bar buttons
-    setupControlBarButtons();
+    window.mediaManager = MediaManager; // Assuming MediaManager is self-initializing or has static methods initially
+    window.statusManager = StatusManager; // Assuming StatusManager is self-initializing
+    window.settingsManager = SettingsManager; // Assuming SettingsManager is self-initializing
 
     // Initialize IMG GEN components
     try {
@@ -78,96 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log("Core application initialization complete.");
 });
-
-/**
- * Sets up LIVE tab control bar button functionality
- */
-function setupControlBarButtons() {
-    // New Chat Button
-    document.getElementById('newChatBtn')?.addEventListener('click', () => {
-        window.chatManager?.clear();
-        StatusManager.addStatus("Starting new chat session", 2000);
-    });
-
-    // Camera Button
-    document.getElementById('cameraBtn')?.addEventListener('click', () => {
-        if (window.mediaManager) {
-            if (window.mediaManager.isCameraActive()) {
-                window.mediaManager.stopCamera();
-            } else {
-                window.mediaManager.startCamera();
-            }
-        }
-    });
-
-    // Screen Share Button
-    document.getElementById('screenBtn')?.addEventListener('click', () => {
-        if (window.mediaManager) {
-            if (window.mediaManager.isScreenActive()) {
-                window.mediaManager.stopScreen();
-            } else {
-                window.mediaManager.startScreen();
-            }
-        }
-    });
-
-    // Microphone Button
-    document.getElementById('micBtn')?.addEventListener('click', () => {
-        if (window.mediaManager) {
-            if (window.mediaManager.isMicActive()) {
-                window.mediaManager.stopMic();
-            } else {
-                window.mediaManager.startMic();
-            }
-        }
-    });
-
-    // Text-to-Speech Button
-    document.getElementById('speakBtn')?.addEventListener('click', () => {
-        const isEnabled = !localStorage.getItem('speakEnabled');
-        localStorage.setItem('speakEnabled', isEnabled);
-        document.getElementById('speakBtn').classList.toggle('active', isEnabled);
-        window.chatManager?.updateSpeechStatus(isEnabled);
-        StatusManager.addStatus(`Text-to-speech ${isEnabled ? 'enabled' : 'disabled'}`, 2000);
-    });
-
-    // Message Input and Send Button
-    const messageInput = document.getElementById('messageInput');
-    const sendBtn = document.getElementById('sendBtn');
-
-    if (messageInput && sendBtn) {
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleMessageSend();
-            }
-        });
-
-        sendBtn.addEventListener('click', handleMessageSend);
-    }
-}
-
-/**
- * Handles sending a message in either LIVE or IMG GEN mode
- */
-function handleMessageSend() {
-    const messageInput = document.getElementById('messageInput');
-    const message = messageInput?.value.trim();
-    
-    if (!message) return;
-
-    const isLiveMode = document.getElementById('liveTab').checked;
-    
-    if (isLiveMode) {
-        // Handle LIVE tab message
-        window.chatManager?.addUserMessage(message);
-        // TODO: Send to agent when implemented
-        messageInput.value = '';
-    } else {
-        // IMG GEN message handling is already set up in ImageGenEvents
-        window.imgGenEvents?.handleImageGeneration();
-    }
-}
 
 /**
  * Sets up tab switching functionality and makes switchTab globally accessible.

@@ -168,7 +168,7 @@ body {
 .live-model-display,
 .img-gen-model-display {
     position: absolute;
-    top: 10px; /* Closer to header */
+    top: 70px; /* Closer to header */
     left: 50%;
     transform: translateX(-50%);
     z-index: 7; /* Above chat, below controls */
@@ -264,7 +264,7 @@ body {
 /* --- Control Bar (Common for both tabs) --- */
 .control-bar {
     position: absolute;
-    bottom: 10px; /* Adjusted to sit between content and input */
+    bottom: 90px; /* Adjusted to sit between content and input */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -567,8 +567,7 @@ body {
 }
 
 /* --- Settings Dialog --- */
-/* --- Popup Overlays --- */
-.popup-overlay {
+.settings-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -582,125 +581,31 @@ body {
     align-items: center;
     z-index: 1000;
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.popup-overlay.active {
+.settings-overlay.active {
     display: flex;
     opacity: 1;
 }
 
-/* --- Popup Content --- */
-.popup-content {
-    background-color: var(--bg-color);
-    border: 1px solid var(--accent-color);
+.settings-dialog {
+    background-color: var(--settings-bg); /* Use settings specific bg */
+    border: 1px solid var(--accent-color); /* Thinner border */
     border-radius: 15px;
-    padding: 25px 30px;
+    padding: 25px 30px; /* Adjust padding */
     width: 90%;
-    max-width: 500px;
+    max-width: 550px; /* Slightly wider */
     position: relative;
-    transform: translateY(20px);
-    transition: all 0.3s ease-in-out;
+    transform: scale(0.95) translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
     max-height: 90vh;
     overflow-y: auto;
 }
 
-.popup-overlay.active .popup-content {
-    transform: translateY(0);
-}
-
-/* --- Popup Controls --- */
-.popup-content h3 {
-    margin-bottom: 20px;
-    color: var(--text-color);
-}
-
-.popup-content .close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 30px;
-    height: 30px;
-    border: none;
-    background: none;
-    color: var(--text-color);
-    font-size: 24px;
-    cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
-}
-
-.popup-content .close-btn:hover {
-    opacity: 1;
-}
-
-.filter-option {
-    margin-bottom: 15px;
-}
-
-.filter-option label {
-    display: block;
-    margin-bottom: 5px;
-    color: var(--text-color);
-}
-
-.filter-option select,
-.filter-option input {
-    width: 100%;
-    padding: 8px;
-    border-radius: 8px;
-    border: 1px solid var(--accent-color);
-    background: var(--button-bg);
-    color: var(--text-color);
-}
-
-.apply-btn {
-    width: 100%;
-    padding: 10px;
-    margin-top: 20px;
-    border-radius: 8px;
-    border: none;
-    background: var(--accent-color);
-    color: var(--text-color);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.apply-btn:hover {
-    background: #43a047;
-    transform: translateY(-2px);
-}
-
-/* --- Image Upload Area --- */
-#imgUploadArea {
-    width: 100%;
-    height: 200px;
-    border: 2px dashed var(--accent-color);
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-top: 10px;
-    position: relative;
-}
-
-#imgUploadArea:hover {
-    border-color: #43a047;
-    background: rgba(67, 160, 71, 0.1);
-}
-
-#imgUploadArea.drag-over {
-    border-color: #43a047;
-    background: rgba(67, 160, 71, 0.2);
-}
-
-#imgUploadPreview {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+.settings-overlay.active .settings-dialog {
+    transform: scale(1) translateY(0);
 }
 
 /* --- Responsive Design --- */
@@ -725,7 +630,7 @@ body {
     .img-gen-model-display {
         width: calc(100% - 20px);
         max-width: 300px;
-        top: 10px; /* Adjust vertical position */
+        top: 55px; /* Adjust vertical position */
     }
 
     .preview-container {

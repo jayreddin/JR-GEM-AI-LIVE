@@ -168,7 +168,7 @@ body {
 .live-model-display,
 .img-gen-model-display {
     position: absolute;
-    top: 10px; /* Closer to header */
+    top: 70px; /* Closer to header */
     left: 50%;
     transform: translateX(-50%);
     z-index: 7; /* Above chat, below controls */
@@ -264,7 +264,7 @@ body {
 /* --- Control Bar (Common for both tabs) --- */
 .control-bar {
     position: absolute;
-    bottom: 10px; /* Adjusted to sit between content and input */
+    bottom: 90px; /* Adjusted to sit between content and input */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -725,7 +725,7 @@ body {
     .img-gen-model-display {
         width: calc(100% - 20px);
         max-width: 300px;
-        top: 10px; /* Adjust vertical position */
+        top: 55px; /* Adjust vertical position */
     }
 
     .preview-container {
