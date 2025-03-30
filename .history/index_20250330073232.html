@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Live</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Controls -->
+        <div class="header-controls">
+            <button id="powerBtn" class="power-btn header-btn" aria-label="Connect" aria-pressed="false">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                    <line x1="12" y1="2" x2="12" y2="12"></line>
+                </svg>
+            </button>
+
+            <!-- Tab Switcher -->
+            <div class="menuHeadButtn tab-switcher">
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="tab-select" id="liveTab" value="live" checked>
+                        <span class="tab-button">LIVE</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="tab-select" id="imgGenTab" value="imggen">
+                        <span class="tab-button">IMG GEN</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Model Selector -->
+            <div class="model-selector-container">
+                <select id="modelSelector" class="model-selector" aria-label="Select Gemini Model"></select>
+            </div>
+
+            <button id="settingsBtn" class="settings-btn header-btn" aria-label="Open Settings">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Live Content Area -->
+        <div id="liveContent" class="tab-content active">
+            <div id="chatHistory" class="chat-history" aria-live="polite">
+            </button>
+        </div>
+
+        <!-- Live Content Area -->
+        <div id="liveContent" class="tab-content active">
+            <div id="chatHistory" class="chat-history" aria-live="polite" aria-atomic="false">
+                <!-- Chat messages will be added here by JS -->
+            </div>
+            <canvas id="visualizer" class="visualizer" aria-hidden="true"></canvas>
+            <div id="cameraPreview" class="camera-preview" aria-hidden="true"></div>
+            <div id="screenPreview" class="screen-preview" aria-hidden="true"></div>
+            <div id="liveControlBar" class="control-bar active" role="toolbar" aria-label="Media Controls">
+                 <button id="newChatBtn" class="new-chat-btn" aria-label="Start New Chat" aria-pressed="false">
+                    <img src="https://img.icons8.com/material-rounded/24/FFFFFF/plus.png" alt="New Chat" />
+                </button>
+                <button id="cameraBtn" class="camera-btn" aria-label="Toggle Camera" aria-pressed="false">
+                    <img src="https://img.icons8.com/material-rounded/24/FFFFFF/camera.png" alt="Camera" />
+                </button>
+                <button id="screenBtn" class="screen-btn" aria-label="Toggle Screen Share" aria-pressed="false">
+                    <img src="https://img.icons8.com/material-rounded/24/FFFFFF/monitor.png" alt="Screen Share" />
+                </button>
+                <button id="micBtn" class="mic-btn" aria-label="Toggle Microphone" aria-pressed="false">
+                    <img src="https://img.icons8.com/material-rounded/24/FFFFFF/microphone.png" alt="Microphone" />
+                </button>
+                <button id="speakBtn" class="speak-btn" aria-label="Toggle Text to Speech" aria-pressed="false">
+                    <img src="https://img.icons8.com/material-rounded/24/FFFFFF/speaker.png" alt="Speak Output" />
+                </button>
+            </div>
+             <!-- Text input container moved outside liveContent -->
+        </div>
+
+        <!-- Image Generation Content Area (Populated by ImageGenUI) -->
+        <div id="imgGenContent" class="tab-content">
+            <!-- Content added by js/imggen/imggen-ui.js -->
+            <!-- Note: The control bar is part of the content added by imggen-ui.js -->
+            <!-- Text input is now shared -->
+        </div>
+
+         <!-- Shared Text Input Container -->
+         <div class="text-input-container">
+            <input type="text" id="messageInput" placeholder="Type your message..." class="text-input" aria-label="Message Input">
+            <button id="sendBtn" class="send-btn" aria-label="Send Message">➤</button>
+        </div>
+
+    </div> <!-- End app-container -->
+
+    <!-- Settings Dialog Overlay (remains outside content areas) -->
+    <div id="settingsOverlay" class="settings-overlay">
+        <div id="settingsDialog" class="settings-dialog">
+            <!-- Settings content loaded by js/settings/settings-manager.js -->
+        </div>
+    </div>
+
+    <script type="module" src="js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,633 @@
+/* --- Core Theme Variables --- */
+:root {
+    --bg-color: #1a1a1a;
+    --button-bg: #2d2d2d;
+    --button-hover: #3d3d3d;
+    --text-color: #ffffff;
+    --accent-color: #4CAF50;
+    --danger-color: #ff4444;
+    --chat-bg: rgba(0, 0, 0, 0.7);
+    --user-msg-bg: #2c5282;
+    --model-msg-bg: #2d3748;
+    --toggle-bg: #ccc;
+    --settings-bg: #1a1a1a;
+    --text-size: 16px;
+}
+
+/* --- Light Theme --- */
+:root[data-theme="light"] {
+    --bg-color: #f5f5f5;
+    --button-bg: #e0e0e0;
+    --button-hover: #d0d0d0;
+    --text-color: #333333;
+    --accent-color: #4CAF50;
+    --danger-color: #cc0000;
+    --chat-bg: rgba(240, 240, 240, 0.9);
+    --user-msg-bg: #d6e4ff;
+    --model-msg-bg: #e6e6e6;
+    --toggle-bg: #ccc;
+    --settings-bg: #f5f5f5;
+}
+
+/* --- Base Styles --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-size: var(--text-size);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* --- App Container --- */
+.app-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* --- Header Controls --- */
+.header-controls {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 10;
+    justify-content: center;
+}
+
+/* --- Common Button Styles --- */
+.header-btn,
+.control-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--button-bg);
+    border: 1px solid var(--accent-color);
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.header-btn:hover,
+.control-btn:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.header-btn svg,
+.control-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+/* --- Tab Switcher --- */
+.menuHeadButtn {
+    margin: 0 auto;
+    position: relative;
+}
+
+.menuHeadButtn .radio-group {
+    display: flex;
+    background-color: var(--button-bg);
+    padding: 3px;
+    border-radius: 25px;
+    border: 1px solid var(--accent-color);
+}
+
+.menuHeadButtn input[type="radio"] {
+    clip: rect(0 0 0 0);
+    clip-path: inset(100%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.menuHeadButtn .tab-button {
+    display: block;
+    padding: 8px 20px;
+    border-radius: 20px;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border: 1px solid transparent;
+}
+
+.menuHeadButtn input[type="radio"]:checked + .tab-button {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
+}
+
+/* --- Model Display --- */
+.model-selector-container {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 7;
+    background-color: var(--bg-color);
+    padding: 5px;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--accent-color);
+    transition: all 0.3s ease;
+    opacity: 1;
+}
+
+.model-selector-container.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(-10px);
+}
+
+.model-selector {
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 20px;
+    padding: 0 15px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+    min-width: 180px;
+    text-align: center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23ffffff" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+}
+
+/* --- Content Areas --- */
+.tab-content {
+    display: none;
+    position: absolute;
+    top: 100px;
+    left: 15px;
+    right: 15px;
+    bottom: 140px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+    opacity: 1;
+}
+
+/* --- Chat History --- */
+#chatHistory {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--chat-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 10px;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 0;
+}
+
+.chat-message {
+    padding: 12px 15px;
+    border-radius: 18px;
+    max-width: 85%;
+    word-wrap: break-word;
+    line-height: 1.45;
+    border: 1px solid var(--accent-color);
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.user-message {
+    background: var(--user-msg-bg);
+    align-self: flex-end;
+    margin-left: 15%;
+    border-radius: 18px 18px 5px 18px;
+}
+
+.model-message {
+    background: var(--model-msg-bg);
+    align-self: flex-start;
+    margin-right: 15%;
+    border-radius: 18px 18px 18px 5px;
+}
+
+/* --- Control Bar --- */
+.control-bar {
+    position: absolute;
+    bottom: 75px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    z-index: 5;
+    background-color: var(--bg-color);
+    padding: 15px 25px;
+    border-radius: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--accent-color);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.control-bar.active {
+    opacity: 1;
+}
+
+/* Control Bar Buttons */
+.camera-btn,
+.screen-btn,
+.mic-btn,
+.speak-btn,
+.new-chat-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--button-bg);
+    border: 2px solid var(--accent-color);
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.camera-btn:hover,
+.screen-btn:hover,
+.mic-btn:hover,
+.speak-btn:hover,
+.new-chat-btn:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.camera-btn.active,
+.screen-btn.active,
+.mic-btn.active,
+.speak-btn.active {
+    background-color: var(--danger-color);
+    border-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 10px rgba(255, 68, 68, 0.7);
+}
+
+/* --- Text Input Container --- */
+.text-input-container {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    display: flex;
+    gap: 10px;
+    z-index: 6;
+}
+
+.text-input {
+    flex: 1;
+    padding: 12px 15px;
+    border-radius: 20px;
+    border: 1px solid var(--accent-color);
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.text-input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+/* Send Button */
+.send-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.send-btn:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* --- IMG GEN Specific Styles --- */
+.img-gen-model-display {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 0.9em;
+    z-index: 7;
+    white-space: nowrap;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    pointer-events: none;
+    font-weight: 600;
+}
+
+.filter-option {
+    margin-bottom: 20px;
+}
+
+.filter-option label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.filter-option select,
+.filter-option input[type="number"],
+.filter-option input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    background-color: var(--button-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 8px;
+    color: var(--text-color);
+    font-size: 0.95em;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.filter-option select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23ffffff" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+}
+
+.filter-option input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.filter-option input[type="number"]::-webkit-outer-spin-button,
+.filter-option input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.filter-option select:hover,
+.filter-option input[type="number"]:hover,
+.filter-option input[type="text"]:hover {
+    border-color: var(--accent-color);
+    background-color: var(--button-hover);
+}
+
+.filter-option select:focus,
+.filter-option input[type="number"]:focus,
+.filter-option input[type="text"]:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 24px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    padding: 0;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.1);
+}
+
+.apply-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500;
+    margin-top: 20px;
+    transition: all 0.2s ease;
+}
+
+.apply-btn:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Image Display Area --- */
+.image-display {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: var(--chat-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 15px;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.generated-image {
+    max-width: calc(50% - 15px);
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.generated-image:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.placeholder-text {
+    color: var(--text-color);
+    opacity: 0.6;
+    font-style: italic;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+/* --- Image Upload Area --- */
+#imgUploadArea {
+    min-height: 150px;
+    border: 2px dashed var(--accent-color);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: var(--button-bg);
+}
+
+#imgUploadArea:hover {
+    background-color: var(--button-hover);
+    border-color: var(--text-color);
+    transform: translateY(-2px);
+}
+
+#imgUploadArea.drag-over {
+    border-color: var(--accent-color);
+    background-color: var(--button-hover);
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+}
+
+#imgUploadPreview {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    display: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Responsive Design --- */
+@media screen and (max-width: 768px) {
+    .tab-content {
+        top: 110px;
+        left: 10px;
+        right: 10px;
+        bottom: 130px;
+    }
+
+    #imgGenControlBar {
+        padding: 12px 15px;
+        gap: 10px;
+        width: calc(100% - 20px);
+        max-width: 500px;
+        bottom: 70px;
+    }
+
+    .img-gen-btn {
+        width: 42px;
+        height: 42px;
+    }
+
+    .img-gen-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .mode-btn {
+        min-width: auto;
+        padding: 0 12px;
+    }
+
+    .mode-btn span {
+        font-size: 12px;
+    }
+
+    .model-selector-container,
+    .img-gen-model-display {
+        width: calc(100% - 20px);
+        max-width: 300px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .menuHeadButtn .tab-button {
+        padding: 6px 15px;
+        font-size: 0.85em;
+    }
+
+    #imgGenControlBar {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .img-gen-btn {
+        width: 38px;
+        height: 38px;
+    }
+
+    .img-gen-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .mode-btn span {
+        display: none;
+    }
+}

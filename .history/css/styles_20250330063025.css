@@ -1,0 +1,113 @@
+:root {
+    /* Dark theme (default) */
+    --bg-color: #1a1a1a;
+    --button-bg: #2d2d2d;
+    --button-hover: #3d3d3d;
+    --text-color: #ffffff;
+    --accent-color: #4CAF50;
+    --danger-color: #ff4444;
+    --chat-bg: rgba(0, 0, 0, 0.7);
+    --user-msg-bg: #2c5282;
+    --model-msg-bg: #2d3748;
+    --toggle-bg: #ccc;
+    --settings-bg: #1a1a1a;
+    --text-size: 16px;
+}
+
+:root[data-theme="light"] {
+    --bg-color: #f5f5f5;
+    --button-bg: #e0e0e0;
+    --button-hover: #d0d0d0;
+    --text-color: #333333;
+    --accent-color: #4CAF50;
+    --danger-color: #cc0000;
+    --chat-bg: rgba(240, 240, 240, 0.9);
+}
+
+#liveContent:not(.active),
+#imgGenContent:not(.active) {
+    z-index: 1;
+}
+
+#chatHistory {
+    z-index: 0;
+}
+
+/* Control Bars */
+.control-bar {
+    display: none;
+    position: absolute;
+    bottom: 75px;
+    left: 0;
+    right: 0;
+    padding: 0 15px;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.control-bar.active {
+    display: flex;
+    opacity: 1;
+}
+
+/* Improved radio button styling */
+.menuHeadButtn {
+    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.menuHeadButtn div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.menuHeadButtn input[type="radio"] {
+    clip: rect(0 0 0 0);
+    clip-path: inset(100%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.menuHeadButtn input[type="radio"]:checked + span {
+    box-shadow: 0 0 8px var(--accent-color), 0 0 0 1px var(--accent-color);
+    background-color: var(--button-bg);
+    z-index: 1;
+    color: var(--accent-color);
+}
+
+.menuHeadButtn label span {
+    display: block;
+    cursor: pointer;
+    background-color: var(--button-bg);
+    padding: 0.375em .75em;
+    position: relative;
+    margin-left: .0625em;
+    box-shadow: 0 0 0 0.0625em var(--accent-color);
+    letter-spacing: .05em;
+    color: var(--text-color);
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid var(--accent-color);
+}
+
+.menuHeadButtn label:first-child span {
+    border-radius: .375em 0 0 .375em;
+}
+
+.menuHeadButtn label:last-child span {
+    border-radius: 0 .375em .375em 0;
+}
+
+.menuHeadButtn label span:hover {
+    background-color: var(--button-hover);
+}

@@ -1,0 +1,1434 @@
+/* --- Core Theme Variables --- */
+:root {
+    --bg-color: #1a1a1a;
+    --button-bg: #2d2d2d;
+    --button-hover: #3d3d3d;
+    --text-color: #ffffff;
+    --accent-color: #4CAF50;
+    --danger-color: #ff4444;
+    --chat-bg: rgba(0, 0, 0, 0.7);
+    --user-msg-bg: #2c5282;
+    --model-msg-bg: #2d3748;
+    --toggle-bg: #ccc;
+    --settings-bg: #1a1a1a;
+    /* Added variable for chat text size based on settings manager */
+    --text-size: 16px;
+    /* Default, will be overridden by JS */
+}
+
+:root[data-theme="light"] {
+    /* Light theme */
+    --bg-color: #f5f5f5;
+    --button-bg: #e0e0e0;
+    --button-hover: #d0d0d0;
+    --text-color: #333333;
+    --accent-color: #4CAF50;
+    /* Keep accent consistent or define light theme accent */
+    --danger-color: #cc0000;
+    /* Slightly adjusted danger for light bg */
+    --chat-bg: rgba(240, 240, 240, 0.9);
+    --user-msg-bg: #d6e4ff;
+    --model-msg-bg: #e6e6e6;
+    --toggle-bg: #ccc;
+    --settings-bg: #f5f5f5;
+    /* Text size variable applies here too */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    /* Using flex for body might be unnecessary if app-container handles layout */
+    flex-direction: column;
+    font-size: var(--text-size);
+    /* Apply base text size */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    /* Smooth theme transition */
+}
+
+/* --- Main Layout --- */
+
+.app-container {
+    position: relative;
+    /* Needed for absolute positioning of children */
+    width: 100%;
+    height: 100vh;
+    /* Full viewport height */
+    display: flex;
+    /* Centers content if needed, but children are absolutely positioned */
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    /* Prevent content overflow */
+}
+
+/* --- Top Bar Buttons --- */
+
+/* Common styles for top buttons */
+.power-btn,
+.new-chat-btn,
+.settings-btn {
+    position: absolute;
+    top: 10px;
+    padding: 8px;
+    /* Adjusted padding */
+    /* background: linear-gradient(to bottom, #4CAF50, #2E7D32); */
+    /* Consider simpler background */
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    border: 1px solid var(--accent-color);
+    /* Use accent border */
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    /* Ensure above other elements */
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.power-btn:hover,
+.new-chat-btn:hover,
+.settings-btn:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.1);
+}
+
+.power-btn {
+    left: 15px;
+    /* Position power button */
+}
+
+.power-btn svg {
+    /* Style the inline SVG */
+    stroke: var(--text-color);
+    width: 20px;
+    height: 20px;
+}
+
+.power-btn.connected svg {
+    /* Style when connected */
+    stroke: var(--accent-color);
+    /* Change stroke color when connected */
+    /* Or apply filter/glow */
+    /* filter: drop-shadow(0 0 3px var(--accent-color)); */
+}
+
+
+.new-chat-btn {
+    left: 70px;
+    /* Position new chat button */
+}
+
+.settings-btn {
+    right: 15px;
+    /* Position settings button */
+}
+
+.settings-btn svg {
+    /* Style settings icon */
+    stroke: var(--text-color);
+}
+
+/* --- Header Controls Wrapper --- */
+.header-controls {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    right: 15px;
+    /* Occupy available space */
+    display: flex;
+    align-items: center;
+    /* Vertically align items */
+    gap: 10px;
+    /* Space between items */
+    z-index: 10;
+    /* Ensure above other elements */
+    justify-content: center; /* Center the header items */
+}
+
+/* --- Common style for header items (buttons, selector) --- */
+.header-btn {
+    /* Reset individual positioning if using flexbox layout now */
+    position: static;
+    /* Remove absolute positioning */
+    /* Ensure consistent height if needed, e.g., matching button height */
+    height: 40px;
+    flex-shrink: 0;
+    /* Prevent items from shrinking */
+}
+
+
+/* --- Model Selector Styling --- */
+.model-selector {
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 20px;
+    padding: 0 15px;
+    height: 32px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: background-color 0.2s ease;
+    min-width: 120px;
+    text-align: center;
+}
+
+.model-selector:hover {
+    background-color: var(--button-hover);
+}
+
+.model-selector:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    /* Focus glow */
+}
+
+/* --- Adjust existing Top Bar Button positioning --- */
+/* Remove absolute positioning from individual buttons as they are now in the flex container */
+.power-btn,
+.new-chat-btn,
+.settings-btn {
+    position: static;
+    /* Override absolute positioning */
+    /* Adjust order if needed using flexbox 'order' property on .header-controls, or rearrange in HTML */
+}
+
+/* Ensure settings button is on the right if using justify-content: space-between on header-controls */
+/* If using justify-content: flex-start, settings btn needs margin-left: auto */
+.settings-btn {
+    margin-left: auto;
+    /* Push settings button to the far right */
+}
+
+/* --- Chat History --- */
+
+.chat-history {
+    position: absolute;
+    top: 60px;
+    /* Below top buttons */
+    left: 15px;
+    right: 15px;
+    bottom: 140px;
+    /* Above control bar and input */
+    background: var(--chat-bg);
+    border: 1px solid var(--accent-color);
+    /* Added border */
+    border-radius: 10px;
+    padding: 15px;
+    overflow-y: auto;
+    /* Enable scrolling for long chats */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    /* Space between messages */
+    z-index: 6;
+    /* Behind controls but above previews */
+    /* font-size controlled by body */
+    scrollbar-width: thin;
+    /* For Firefox */
+    scrollbar-color: var(--accent-color) var(--button-bg);
+    /* For Firefox */
+}
+
+/* Webkit scrollbar styling */
+.chat-history::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-history::-webkit-scrollbar-track {
+    background: var(--button-bg);
+    border-radius: 4px;
+}
+
+.chat-history::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 4px;
+    border: 2px solid var(--button-bg);
+}
+
+
+.chat-message {
+    padding: 10px 15px;
+    border-radius: 18px;
+    /* Slightly more rounded */
+    max-width: 85%;
+    /* Max width for messages */
+    word-wrap: break-word;
+    /* Allow long words to break */
+    line-height: 1.45;
+    /* Slightly more spacing */
+    border: 2px solid var(--accent-color);
+    /* Added green border */
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    /* Start hidden for fade-in */
+    animation: fadeIn 0.3s ease forwards;
+    /* Fade-in animation */
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.chat-title {
+    font-size: 0.8em;
+    opacity: 0.7;
+    /* Slightly less prominent */
+    margin-bottom: 4px;
+    font-weight: bold;
+    color: var(--text-color);
+    /* Ensure contrast */
+}
+
+.chat-content {
+    width: 100%;
+}
+
+.user-message {
+    background: var(--user-msg-bg);
+    color: var(--text-color);
+    /* Ensure contrast on user message bg */
+    align-self: flex-end;
+    /* Align to the right */
+    margin-left: 15%;
+    /* Ensure it doesn't take full width */
+    border-radius: 18px 18px 5px 18px;
+    /* Custom rounding */
+}
+
+.model-message {
+    background: var(--model-msg-bg);
+    color: var(--text-color);
+    /* Ensure contrast on model message bg */
+    align-self: flex-start;
+    /* Align to the left */
+    margin-right: 15%;
+    /* Ensure it doesn't take full width */
+    border-radius: 18px 18px 18px 5px;
+    /* Custom rounding */
+}
+
+/* Blinking cursor for streaming model message */
+.model-message.streaming .chat-content::after {
+    content: '▋';
+    display: inline-block;
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+    opacity: 1;
+    /* Ensure visible */
+    color: var(--accent-color);
+    /* Match accent */
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Status messages (e.g., connected, errors) */
+.status-message {
+    font-style: italic;
+    color: var(--accent-color);
+    /* Use accent color */
+    text-align: center;
+    font-size: 0.85em;
+    padding: 5px 0;
+    max-width: 100%;
+    /* Allow full width */
+    align-self: center;
+    /* Center align */
+    background: none;
+    /* No background */
+    border: none;
+    /* No border */
+    border-radius: 0;
+    animation: none;
+    /* No fade-in */
+    opacity: 0.8;
+    /* Slightly transparent */
+}
+
+
+/* --- Bottom Control Bar & Input --- */
+
+.control-bar {
+    position: absolute;
+    bottom: 75px;
+    /* Position above text input */
+    left: 0;
+    /* Stretch full width */
+    right: 0;
+    padding: 0 15px;
+    /* Add horizontal padding */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    /* Space between buttons */
+    z-index: 5;
+    /* Above visualizer/previews, below settings */
+}
+
+/* Common styles for control bar buttons */
+.camera-btn,
+.screen-btn,
+.mic-btn,
+.speak-btn,
+.new-chat-btn {
+    width: 48px;
+    /* Slightly larger */
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--button-bg);
+    border: 2px solid transparent;
+    /* Transparent border initially */
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Subtle shadow */
+}
+
+.camera-btn img,
+.screen-btn img,
+.mic-btn img,
+.speak-btn img {
+    width: 24px;
+    /* Ensure icons size correctly */
+    height: 24px;
+}
+
+
+.camera-btn:hover,
+.screen-btn:hover,
+.mic-btn:hover,
+.speak-btn:hover,
+.new-chat-btn:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-2px);
+    /* Lift effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Active state for toggle buttons */
+.camera-btn.active,
+.screen-btn.active,
+.mic-btn.active,
+.speak-btn.active,
+.new-chat-btn.active {
+    background-color: var(--danger-color);
+    /* Red when active */
+    border-color: rgba(255, 255, 255, 0.7);
+    /* White border when active */
+    box-shadow: 0 0 10px rgba(255, 68, 68, 0.7);
+}
+
+
+.text-input-container {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    display: flex;
+    gap: 10px;
+    z-index: 5;
+    /* Above visualizer/previews */
+}
+
+.text-input {
+    flex: 1;
+    /* Take available space */
+    padding: 12px 15px;
+    border-radius: 20px;
+    /* Pill shape */
+    border: 1px solid var(--accent-color);
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    font-size: 1rem;
+    /* Match base font size */
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.text-input::placeholder {
+    color: var(--text-color);
+    opacity: 0.6;
+}
+
+
+.text-input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    /* Accent glow on focus */
+}
+
+.send-btn {
+    width: 45px;
+    /* Match height */
+    height: 45px;
+    border-radius: 50%;
+    /* Circular button */
+    background-color: var(--accent-color);
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    /* Arrow size */
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.send-btn:hover {
+    background-color: #388E3C;
+    /* Darker accent on hover */
+    transform: scale(1.05);
+}
+
+/* --- Visualizer --- */
+
+.visualizer {
+    position: absolute;
+    bottom: 0;
+    /* At the very bottom */
+    left: 0;
+    width: 100%;
+    height: 80px;
+    /* Reduced height */
+    z-index: 0;
+    /* Behind everything else */
+    opacity: 0.6;
+    /* Slightly transparent */
+    pointer-events: none;
+    /* Allow clicks through */
+}
+
+/* --- Media Previews --- */
+
+.camera-preview,
+.screen-preview {
+    position: absolute;
+    bottom: 140px;
+    /* Position above control bar + input */
+    width: 180px;
+    /* Default width */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent background */
+    border: 1px solid var(--accent-color);
+    border-radius: 8px;
+    overflow: hidden;
+    /* Clip video content */
+    z-index: 2;
+    /* Above visualizer, below controls */
+    display: none;
+    /* Hidden by default, shown by JS */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.3s ease;
+    /* Fade effect */
+}
+
+.camera-preview[aria-hidden="false"],
+.screen-preview[aria-hidden="false"] {
+    display: block;
+    /* Show when not hidden */
+}
+
+
+.camera-preview {
+    left: 15px;
+    height: 135px;
+    /* 4:3 Aspect ratio for 180px width */
+}
+
+.screen-preview {
+    right: 15px;
+    /* Position on the right */
+    height: 101px;
+    /* 16:9 Aspect ratio for 180px width */
+}
+
+.camera-preview video,
+.screen-preview video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Cover the container */
+    display: block;
+    /* Remove extra space below video */
+}
+
+/* --- Camera Switch Button (Mobile Only) --- */
+
+.camera-switch-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    /* Smaller button */
+    height: 35px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    /* Smaller icon */
+    z-index: 10;
+    /* Above video */
+    transition: background-color 0.2s ease;
+}
+
+.camera-switch-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Hide switch button on desktop */
+@media (hover: hover) and (pointer: fine) {
+    .camera-switch-btn {
+        display: none;
+    }
+}
+
+/* --- Settings Dialog --- */
+
+.settings-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Darker overlay */
+    z-index: 1000;
+    /* High z-index */
+    display: flex;
+    /* Use flex to center dialog */
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    /* Start hidden */
+    visibility: hidden;
+    /* Start hidden */
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.settings-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.settings-dialog {
+    background-color: var(--settings-bg);
+    /* Use theme variable */
+    color: var(--text-color);
+    /* Use theme variable */
+    border: 1px solid var(--accent-color);
+    border-radius: 12px;
+    padding: 25px;
+    width: 90%;
+    max-width: 650px;
+    /* Slightly wider */
+    max-height: 85vh;
+    /* Limit height */
+    overflow-y: auto;
+    /* Enable scrolling for content */
+    z-index: 1001;
+    /* Above overlay */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    transform: scale(0.95);
+    /* Start slightly scaled down */
+    transition: transform 0.3s ease;
+}
+
+.settings-overlay.active .settings-dialog {
+    transform: scale(1);
+    /* Scale in when active */
+}
+
+.settings-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    /* Allow tabs to wrap on small screens */
+    gap: 5px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--accent-color);
+    padding-bottom: 10px;
+}
+
+.settings-tab {
+    padding: 8px 15px;
+    /* More padding */
+    background-color: var(--button-bg);
+    border: 1px solid transparent;
+    /* No border initially */
+    border-radius: 6px;
+    /* Rounded tabs */
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    font-weight: 500;
+}
+
+.settings-tab:hover {
+    background-color: var(--button-hover);
+}
+
+.settings-tab.active {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--text-color);
+    /* Ensure text contrast on accent */
+}
+
+.tab-content {
+    display: none;
+    padding-top: 10px;
+    /* Space below tabs */
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeTabIn 0.4s ease;
+    /* Fade in tab content */
+}
+
+@keyframes fadeTabIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.settings-group {
+    margin-bottom: 25px;
+    /* More space between groups */
+}
+
+.settings-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    /* Slightly bolder labels */
+    color: var(--text-color);
+    opacity: 0.9;
+}
+
+/* Specific styling for switch labels */
+.settings-group label[for*="Toggle"] {
+    display: inline-block;
+    /* Keep label beside switch */
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+
+.settings-group select,
+.settings-group input[type="text"],
+.settings-group input[type="password"],
+.settings-group textarea {
+    width: 100%;
+    padding: 10px;
+    /* More padding */
+    background-color: var(--button-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 6px;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.settings-group textarea {
+    resize: vertical;
+    /* Allow vertical resize */
+    min-height: 80px;
+}
+
+.settings-group select:focus,
+.settings-group input[type="text"]:focus,
+.settings-group input[type="password"]:focus,
+.settings-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+}
+
+
+/* Slider styling */
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    /* Space between slider and value display */
+}
+
+.slider-container input[type="range"] {
+    flex: 1;
+    /* Slider takes most space */
+    cursor: pointer;
+    height: 6px;
+    background: var(--button-hover);
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+    /* Override default look */
+    appearance: none;
+}
+
+/* Webkit thumb */
+.slider-container input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Firefox thumb */
+.slider-container input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--accent-color);
+    border-radius: 50%;
+
+/* --- Tabs Styling --- */
+.menuHeadButtn {
+    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.menuHeadButtn div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.menuHeadButtn input[type="radio"] {
+    clip: rect(0 0 0 0);
+    clip-path: inset(100%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.menuHeadButtn input[type="radio"]:checked + span {
+    box-shadow: 0 0 0 0.0625em var(--accent-color);
+    background-color: var(--button-bg);
+    z-index: 1;
+    color: var(--accent-color);
+}
+
+.menuHeadButtn label span {
+    display: block;
+    cursor: pointer;
+    background-color: var(--button-bg);
+    padding: 0.375em .75em;
+    position: relative;
+    margin-left: .0625em;
+    box-shadow: 0 0 0 0.0625em var(--accent-color);
+    letter-spacing: .05em;
+    color: var(--text-color);
+    text-align: center;
+    transition: background-color .5s ease, box-shadow 0.3s ease; /* Added transition */
+    border: 1px solid var(--accent-color); /* Added green border */
+}
+
+.menuHeadButtn label:first-child span {
+    border-radius: .375em 0 0 .375em;
+}
+
+.menuHeadButtn label:last-child span {
+    border-radius: 0 .375em .375em 0;
+}
+
+/* Static Model Display for IMG GEN Tab */
+.img-gen-model-display {
+    position: absolute; /* Position relative to parent */
+    top: 5px; /* Adjust as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 0.8em;
+    z-index: 5; /* Ensure visible */
+    white-space: nowrap; /* Prevent wrapping */
+}
+
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 15px;
+    right: 15px;
+    bottom: 140px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+#liveContent {
+    z-index: 2;
+}
+
+#imgGenContent {
+    z-index: 1;
+}
+
+#chatHistory {
+    z-index: 0;
+}
+
+/* Ensure IMG GEN content is above chat history */
+#imgGenContent {
+    z-index: 2;
+}
+
+/* Ensure chat history is behind when in IMG GEN mode */
+#chatHistory.hidden {
+    display: none !important;
+}
+
+/* Control Bars */
+.control-bar {
+    display: none;
+}
+
+.control-bar.active {
+    display: flex;
+}
+
+/* Model Selector Overlay */
+.model-selector-overlay {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background-color: var(--button-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 6px;
+    padding: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Image Display */
+.image-display {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: var(--chat-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 10px;
+    display: flex; /* Use flexbox */
+    flex-wrap: wrap; /* Allow images to wrap */
+    gap: 10px; /* Space between images */
+    padding: 10px; /* Padding inside the container */
+    justify-content: center; /* Center items horizontally */
+    align-items: center; /* Center items vertically */
+    overflow-y: auto; /* Allow vertical scrolling if needed */
+}
+
+.placeholder-text {
+    color: var(--text-color);
+    opacity: 0.6;
+    font-style: italic;
+}
+
+.generated-image {
+    /* Adjust max size to fit multiple images, consider parent padding/gap */
+    max-width: calc(50% - 10px); /* Example: Fit 2 side-by-side with gap */
+    max-height: 300px; /* Example max height */
+    object-fit: contain;
+    border-radius: 6px; /* Optional rounding */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Optional shadow */
+    /* Remove height: 100% if set elsewhere, let aspect ratio control height */
+}
+
+/* Popup Overlay for Filters */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: var(--bg-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 10px;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+}
+
+.popup-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--accent-color);
+    text-align: center;
+}
+
+.filter-option {
+    margin-bottom: 15px;
+}
+
+.filter-option label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-color);
+}
+
+.filter-option select {
+    width: 100%;
+    padding: 8px;
+    background-color: var(--button-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 6px;
+    color: var(--text-color);
+}
+
+.apply-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Upload image button animation */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.upload-active {
+    animation: pulse 1.5s infinite;
+    background-color: var(--accent-color) !important;
+}
+
+    cursor: pointer;
+    border: none;
+}
+
+.slider-container span {
+    /* Value display */
+    min-width: 70px;
+    /* Ensure space for text */
+    text-align: right;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+
+/* Switch styling */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    /* Slightly smaller */
+    height: 24px;
+    vertical-align: middle;
+    /* Align with label */
+}
+
+.switch input {
+    /* Hide default checkbox */
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    /* The track */
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--toggle-bg);
+    border-radius: 24px;
+    transition: background-color .3s;
+}
+
+.slider:before {
+    /* The knob */
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px; /* Fixed: Added colon */
+    left: 3px;
+    /* Initial position */
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform .3s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+input:checked+.slider {
+    background-color: var(--accent-color);
+    /* Track color when checked */
+}
+
+input:checked+.slider:before {
+    transform: translateX(20px);
+    /* Move knob to the right */
+}
+
+/* Focus style for accessibility */
+input:focus+.slider {
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+}
+
+
+.settings-save-btn {
+    width: 100%;
+    padding: 12px 20px;
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 20px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    /* position: sticky; */
+    /* Sticky might cause issues with overflow scrolling */
+    /* bottom: 0; */
+}
+
+.settings-save-btn:hover {
+    background-color: #388E3C;
+    /* Darker accent */
+}
+
+.settings-save-btn:active {
+    transform: scale(0.98);
+    /* Press effect */
+}
+
+/* --- Image Generation Styles --- */
+.img-gen-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.img-gen-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 15px;
+    background-color: var(--button-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 20px;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.img-gen-btn:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-2px);
+}
+
+.img-gen-btn.active {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+}
+
+.img-gen-btn svg {
+    stroke: currentColor;
+}
+
+/* --- Media Queries --- */
+
+/* Example: Adjust layout for smaller screens */
+@media screen and (max-width: 768px) {
+    body {
+        overflow: hidden;
+    }
+
+    .app-container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .header-controls {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: var(--bg-color);
+        padding: 10px 15px;
+        z-index: 100;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .chat-history {
+        position: fixed;
+        top: 60px;
+        bottom: 130px;
+        left: 0;
+        right: 0;
+        padding: 15px;
+        overflow-y: auto;
+    }
+
+    .control-bar {
+        position: fixed;
+        bottom: 65px;
+        left: 0;
+        right: 0;
+        background: var(--bg-color);
+        padding: 10px 0;
+        z-index: 100;
+    }
+
+    .text-input-container {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        background: var(--bg-color);
+        padding: 5px 0;
+        z-index: 100;
+    }
+
+    .chat-message {
+        max-width: 90%;
+        /* Allow messages to be slightly wider */
+    }
+
+    .user-message {
+        margin-left: 10%;
+    }
+
+    .model-message {
+        margin-right: 10%;
+    }
+
+    .settings-dialog {
+        padding: 20px;
+        max-height: 90vh;
+        /* Allow slightly more height */
+    }
+
+    .settings-tabs {
+        justify-content: center;
+        /* Center tabs if they wrap */
+    }
+}
+
+
+/* Example: Adjust control bar for very small screens */
+
+    .camera-btn,
+    .screen-btn,
+    .mic-btn,
+    .speak-btn {
+        width: 42px;
+        /* Slightly smaller buttons */
+        height: 42px;
+    }
+
+    .camera-btn img,
+    .screen-btn img,
+    .mic-btn img,
+    .speak-btn img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .text-input-container {
+        bottom: 10px;
+    }
+
+    .text-input {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+
+    .send-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    .chat-history {
+        bottom: 120px;
+        /* Adjust bottom */
+    }
+
+    .camera-preview,
+    .screen-preview {
+        width: 140px;
+        /* Smaller previews */
+        bottom: 120px;
+    }
+
+    .camera-preview {
+        height: 105px;
+        /* 4:3 */
+    }
+
+    .screen-preview {
+        height: 79px;
+        /* 16:9 */
+    }
+
+    .settings-tab {
+        padding: 6px 10px;
+        font-size: 0.9em;
+    }
+
+
+/* Hide power button text if needed (though it's an icon now) */
+/* .power-btn span { display: none; } */
+
+/* Remove power button background image if using inline SVG */
+
+/* Model Selector Overlay Position */
+.model-selector-overlay {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background-color: var(--button-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 6px;
+    padding: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* From Uiverse.io by Pradeepsaranbishnoi */
+:focus {
+  outline: none; /* Fixed: Added value 'none' */
+  border-color: #4caf50;
+  box-shadow: 0 0 0 4px #b5c9fc;
+}
+
+.menuHeadButtn div {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+  justify-content: center;
+}
+
+.menuHeadButtn input[type="radio"] {
+  clip: rect(0 0 0 0);
+  clip-path: inset(100%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.menuHeadButtn input[type="radio"]:checked + span {
+    /* Enhanced glow effect */
+    box-shadow: 0 0 8px var(--accent-color), 0 0 0 1px var(--accent-color); /* Glow + border emphasis */
+    background-color: var(--button-bg);
+    z-index: 1;
+    color: var(--accent-color);
+}
+
+label span {
+  display: block;
+  cursor: pointer;
+  background-color: #fff;
+  padding: 0.375em .75em;
+  position: relative;
+  margin-left: .0625em;
+  box-shadow: 0 0 0 0.0625em #4caf50;
+  letter-spacing: .05em;
+  color: #3e4963;
+  text-align: center;
+  transition: background-color .5s ease;
+}
+
+label:first-child span {
+  border-radius: .375em 0 0 .375em;
+}
+
+label:last-child span {
+  border-radius: 0 .375em .375em 0;
+}

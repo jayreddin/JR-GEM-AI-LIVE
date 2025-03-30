@@ -1,0 +1,25 @@
+ss/styles.css</path>
+<append>/* --- Tab-specific Content --- */
+#imgGenContent.active ~ .popup-overlay {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+#imgGenContent:not(.active) ~ .popup-overlay {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* --- Tab Content States --- */
+.tab-content {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+    opacity: 1;
+}
