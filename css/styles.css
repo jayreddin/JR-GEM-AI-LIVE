@@ -155,9 +155,7 @@ body {
     /* Space between items */
     z-index: 10;
     /* Ensure above other elements */
-    /* Justify content based on desired alignment, e.g. flex-start or space-between */
-    justify-content: flex-start;
-    /* Align items to the start (left) */
+    justify-content: center; /* Center the header items */
 }
 
 /* --- Common style for header items (buttons, selector) --- */
@@ -861,7 +859,6 @@ body {
     cursor: pointer;
     font-weight: 600;
     transition: all 0.2s ease;
-    transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .tab-btn:hover {
@@ -1152,13 +1149,13 @@ input:focus+.slider {
     body {
         overflow: hidden;
     }
-    
+
     .app-container {
         display: flex;
         flex-direction: column;
         height: 100vh;
     }
-    
+
     .header-controls {
         position: fixed;
         top: 0;
@@ -1169,7 +1166,7 @@ input:focus+.slider {
         z-index: 100;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
-    
+
     .chat-history {
         position: fixed;
         top: 60px;
@@ -1179,7 +1176,7 @@ input:focus+.slider {
         padding: 15px;
         overflow-y: auto;
     }
-    
+
     .control-bar {
         position: fixed;
         bottom: 65px;
@@ -1189,7 +1186,7 @@ input:focus+.slider {
         padding: 10px 0;
         z-index: 100;
     }
-    
+
     .text-input-container {
         position: fixed;
         bottom: 10px;
@@ -1199,7 +1196,7 @@ input:focus+.slider {
         padding: 5px 0;
         z-index: 100;
     }
-    
+
     .chat-message {
         max-width: 90%;
         /* Allow messages to be slightly wider */
@@ -1299,3 +1296,17 @@ input:focus+.slider {
 /* .power-btn span { display: none; } */
 
 /* Remove power button background image if using inline SVG */
+
+/* Model Selector Overlay Position */
+.model-selector-overlay {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background-color: var(--button-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 6px;
+    padding: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
