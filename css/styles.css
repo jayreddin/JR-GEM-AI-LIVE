@@ -1154,6 +1154,44 @@ input:focus+.slider {
     /* Press effect */
 }
 
+/* --- Image Generation Styles --- */
+.img-gen-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.img-gen-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 15px;
+    background-color: var(--button-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 20px;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.img-gen-btn:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-2px);
+}
+
+.img-gen-btn.active {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+}
+
+.img-gen-btn svg {
+    stroke: currentColor;
+}
+
 /* --- Media Queries --- */
 
 /* Example: Adjust layout for smaller screens */
