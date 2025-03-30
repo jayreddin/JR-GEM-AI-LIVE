@@ -1,7 +1,6 @@
-
 :root {
     /* Dark theme (default) */
-    --bg-color: #121212;
+    --bg-color: #1a1a1a;
     --button-bg: #2d2d2d;
     --button-hover: #3d3d3d;
     --text-color: #ffffff;
@@ -19,17 +18,17 @@
 
 :root[data-theme="light"] {
     /* Light theme */
-    --bg-color: #f8f9fa;
-    --button-bg: #e9ecef;
-    --button-hover: #dee2e6;
-    --text-color: #212529;
+    --bg-color: #f5f5f5;
+    --button-bg: #e0e0e0;
+    --button-hover: #d0d0d0;
+    --text-color: #333333;
     --accent-color: #4CAF50;
     /* Keep accent consistent or define light theme accent */
-    --danger-color: #dc3545;
+    --danger-color: #cc0000;
     /* Slightly adjusted danger for light bg */
     --chat-bg: rgba(240, 240, 240, 0.9);
-    --user-msg-bg: #c5e1ff;
-    --model-msg-bg: #e9ecef;
+    --user-msg-bg: #d6e4ff;
+    --model-msg-bg: #e6e6e6;
     --toggle-bg: #ccc;
     --settings-bg: #f5f5f5;
     /* Text size variable applies here too */
@@ -69,13 +68,6 @@ body {
     align-items: center;
     overflow: hidden;
     /* Prevent content overflow */
-    background-image: linear-gradient(to bottom right, rgba(30, 30, 30, 0.3), rgba(10, 10, 10, 0.1));
-    /* Subtle gradient background */
-}
-
-:root[data-theme="light"] .app-container {
-    background-image: linear-gradient(to bottom right, rgba(240, 240, 240, 0.3), rgba(220, 220, 220, 0.1));
-    /* Subtle gradient for light theme */
 }
 
 /* --- Top Bar Buttons --- */
@@ -87,6 +79,9 @@ body {
     position: absolute;
     top: 10px;
     padding: 8px;
+    /* Adjusted padding */
+    /* background: linear-gradient(to bottom, #4CAF50, #2E7D32); */
+    /* Consider simpler background */
     background-color: var(--button-bg);
     color: var(--text-color);
     border: 1px solid var(--accent-color);
@@ -95,13 +90,12 @@ body {
     cursor: pointer;
     z-index: 10;
     /* Ensure above other elements */
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .power-btn:hover,
@@ -109,14 +103,6 @@ body {
 .settings-btn:hover {
     background-color: var(--button-hover);
     transform: scale(1.1);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.power-btn:active,
-.new-chat-btn:active,
-.settings-btn:active {
-    transform: scale(0.95);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .power-btn {
@@ -136,7 +122,7 @@ body {
     stroke: var(--accent-color);
     /* Change stroke color when connected */
     /* Or apply filter/glow */
-    filter: drop-shadow(0 0 3px var(--accent-color));
+    /* filter: drop-shadow(0 0 3px var(--accent-color)); */
 }
 
 
@@ -188,39 +174,38 @@ body {
 
 /* --- Model Selector Styling --- */
 .model-selector {
+    /* Use class selector */
+    /* Appearance to match theme */
     background-color: var(--button-bg);
     color: var(--text-color);
     border: 1px solid var(--accent-color);
-    border-radius: 20px; /* More rounded for modern look */
-    padding: 0 15px;
-    height: 42px; /* Match button height */
+    border-radius: 6px;
+    /* Match settings inputs */
+    padding: 0 10px;
+    /* Adjust padding (vertical padding handled by height) */
+    height: 40px;
+    /* Match button height */
     cursor: pointer;
     font-family: inherit;
-    font-size: 0.95rem;
-    font-weight: 500;
+    /* Inherit body font */
+    font-size: 0.9rem;
+    /* Slightly smaller text */
     outline: none;
-    transition: all 0.2s ease;
-    min-width: 180px;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    min-width: 150px;
+    /* Give it some minimum width */
     text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-    -webkit-appearance: none; /* Remove default styling */
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%234CAF50%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px top 50%;
-    background-size: 12px auto;
-    padding-right: 30px; /* Make room for custom dropdown arrow */
+    /* Center text in dropdown */
 }
 
 .model-selector:hover {
     background-color: var(--button-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .model-selector:focus {
     border-color: var(--accent-color);
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    /* Focus glow */
 }
 
 /* --- Adjust existing Top Bar Button positioning --- */
@@ -245,22 +230,29 @@ body {
 .chat-history {
     position: absolute;
     top: 60px;
+    /* Below top buttons */
     left: 15px;
     right: 15px;
     bottom: 140px;
+    /* Above control bar and input */
     background: var(--chat-bg);
     border: 1px solid var(--accent-color);
-    border-radius: 16px;
-    padding: 20px;
+    /* Added border */
+    border-radius: 10px;
+    padding: 15px;
     overflow-y: auto;
+    /* Enable scrolling for long chats */
     display: flex;
     flex-direction: column;
-    gap: 16px; /* More space between messages */
+    gap: 12px;
+    /* Space between messages */
     z-index: 1;
+    /* Behind controls but above previews */
+    /* font-size controlled by body */
     scrollbar-width: thin;
+    /* For Firefox */
     scrollbar-color: var(--accent-color) var(--button-bg);
-    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5px); /* Slight blur effect for depth */
+    /* For Firefox */
 }
 
 /* Webkit scrollbar styling */
@@ -281,34 +273,29 @@ body {
 
 
 .chat-message {
-    padding: 12px 18px;
+    padding: 10px 15px;
     border-radius: 18px;
+    /* Slightly more rounded */
     max-width: 85%;
+    /* Max width for messages */
     word-wrap: break-word;
-    line-height: 1.5;
-    border: 1px solid var(--accent-color);
+    /* Allow long words to break */
+    line-height: 1.45;
+    /* Slightly more spacing */
+    border: 2px solid var(--accent-color);
+    /* Added green border */
     display: flex;
     flex-direction: column;
     opacity: 0;
+    /* Start hidden for fade-in */
     animation: fadeIn 0.3s ease forwards;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.chat-message:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    /* Fade-in animation */
 }
 
 /* Fade-in animation */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
     to {
         opacity: 1;
-        transform: translateY(0);
     }
 }
 
@@ -424,58 +411,32 @@ body {
 .mic-btn,
 .speak-btn,
 .new-chat-btn {
-    width: 52px; /* Slightly larger */
-    height: 52px;
+    width: 48px;
+    /* Slightly larger */
+    height: 48px;
     border-radius: 50%;
     background-color: var(--button-bg);
     border: 2px solid transparent;
+    /* Transparent border initially */
     color: var(--text-color);
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy effect */
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-    position: relative;
-    overflow: hidden; /* For ripple effect */
-}
-
-.camera-btn::after,
-.screen-btn::after, 
-.mic-btn::after,
-.speak-btn::after,
-.new-chat-btn::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 50%;
-    transform: scale(0);
-}
-
-.camera-btn:active::after,
-.screen-btn:active::after,
-.mic-btn:active::after,
-.speak-btn:active::after,
-.new-chat-btn:active::after {
-    opacity: 1;
-    transform: scale(2);
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Subtle shadow */
 }
 
 .camera-btn img,
 .screen-btn img,
 .mic-btn img,
-.speak-btn img,
-.new-chat-btn img {
-    width: 26px; /* Slightly larger icons */
-    height: 26px;
-    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
-    transition: transform 0.2s ease;
+.speak-btn img {
+    width: 24px;
+    /* Ensure icons size correctly */
+    height: 24px;
 }
+
 
 .camera-btn:hover,
 .screen-btn:hover,
@@ -483,16 +444,9 @@ body {
 .speak-btn:hover,
 .new-chat-btn:hover {
     background-color: var(--button-hover);
-    transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
-}
-
-.camera-btn:hover img,
-.screen-btn:hover img,
-.mic-btn:hover img,
-.speak-btn:hover img,
-.new-chat-btn:hover img {
-    transform: scale(1.1);
+    transform: translateY(-2px);
+    /* Lift effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Active state for toggle buttons */
@@ -502,9 +456,10 @@ body {
 .speak-btn.active,
 .new-chat-btn.active {
     background-color: var(--danger-color);
-    border-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 15px rgba(255, 68, 68, 0.7);
-    transform: scale(1.05);
+    /* Red when active */
+    border-color: rgba(255, 255, 255, 0.7);
+    /* White border when active */
+    box-shadow: 0 0 10px rgba(255, 68, 68, 0.7);
 }
 
 
@@ -521,34 +476,37 @@ body {
 
 .text-input {
     flex: 1;
-    padding: 14px 20px;
-    border-radius: 24px;
+    /* Take available space */
+    padding: 12px 15px;
+    border-radius: 20px;
+    /* Pill shape */
     border: 1px solid var(--accent-color);
     background-color: var(--button-bg);
     color: var(--text-color);
     font-size: 1rem;
-    font-weight: 400;
+    /* Match base font size */
     outline: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .text-input::placeholder {
     color: var(--text-color);
     opacity: 0.6;
-    font-weight: 300;
 }
+
 
 .text-input:focus {
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3), 0 4px 12px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    /* Accent glow on focus */
 }
 
 .send-btn {
-    width: 48px;
-    height: 48px;
+    width: 45px;
+    /* Match height */
+    height: 45px;
     border-radius: 50%;
+    /* Circular button */
     background-color: var(--accent-color);
     border: none;
     color: var(--text-color);
@@ -557,34 +515,14 @@ body {
     justify-content: center;
     align-items: center;
     font-size: 1.2rem;
-    transition: all 0.25s ease;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-    position: relative;
-    overflow: hidden;
-}
-
-.send-btn::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 50%;
-    transform: scale(0);
-}
-
-.send-btn:active::after {
-    opacity: 1;
-    transform: scale(2);
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    /* Arrow size */
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .send-btn:hover {
     background-color: #388E3C;
-    transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    /* Darker accent on hover */
+    transform: scale(1.05);
 }
 
 /* --- Visualizer --- */
@@ -715,7 +653,6 @@ body {
     visibility: hidden;
     /* Start hidden */
     transition: opacity 0.3s ease, visibility 0.3s ease;
-    backdrop-filter: blur(5px);
 }
 
 .settings-overlay.active {
